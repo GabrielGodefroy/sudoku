@@ -2,17 +2,19 @@
 .. toctree::
    :maxdepth: 4
    
+Main file
+=========
 
-Sudoku
-======
-
+sudoku.py
+---------
 .. automodule:: sudoku
    :members:
 
-main.py
--------
-.. automodule:: sudoku.main
+sudoku
+======
+.. automodule:: sudoku 
    :members:
+
 
 solver.py
 ---------
@@ -25,9 +27,8 @@ loader.py
    :members:
 
 
-Tests
+tests
 =====
-
 
 .. automodule:: tests
    :members:
