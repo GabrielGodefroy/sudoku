@@ -2,7 +2,8 @@ import pytest
 import numpy as np
 
 from sudoku.loader import load_from_text_file
-from sudoku import DIM
+
+DIM = 9
 
 def test_empty():
     """ Load an empty sudoku """
@@ -10,13 +11,13 @@ def test_empty():
     assert((result == np.zeros((DIM,DIM), dtype=int)).all())
 
 def test_ones():
-    result = load_from_text_file("../DATA/ones.txt")
+    result = load_from_text_file("../DATA/ones.txt", check_validity=False)
     """ Load ones only """
     assert((result == np.ones((DIM,DIM), dtype=int)).all())
 
 def test_diag_ones():
     """ Load identity matrix """
-    result = load_from_text_file("../DATA/diag-ones.txt")
+    result = load_from_text_file("../DATA/diag-ones.txt", check_validity=False)
     assert( (result == np.diag(np.ones(DIM,dtype=int))).all() )
 
 def test_diag():

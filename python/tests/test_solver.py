@@ -1,7 +1,6 @@
 import pytest
 from sudoku.solver import Solver, is_valid_solution
-from sudoku.loader import load_from_text_file
-
+from sudoku.loader import load_from_text_file 
 
 def test_valid():
     sudoku = load_from_text_file("../DATA/validSolution.txt")
@@ -13,16 +12,15 @@ def test_valid():
     for solution in solutions:
         assert(is_valid_solution(solution))
 
-def test_invalid():
-    sudoku = load_from_text_file("../DATA/invalidSolution.txt")
-    assert(is_valid_solution(sudoku)==False)
+def test_empty():
+    sudoku = load_from_text_file("../DATA/empty.txt")
     s = Solver()
-    try:
-        s.solve(sudoku)
-    except : 
-        return 
-    assert(False) # should not be reached
-
+    s.max_solution = 10
+    solutions = s.solve(sudoku)
+    for solution in solutions:
+        assert(is_valid_solution(solution))
+    assert(len(solutions) <= s.max_solution)
+    assert(len(solutions) >= 1)
 
 def test_easy():
     sudoku = load_from_text_file("../DATA/easy.txt")
@@ -32,16 +30,15 @@ def test_easy():
     for solution in solutions:
         assert(is_valid_solution(solution))
     assert(len(solutions) <= s.max_solution)
+    assert(len(solutions) >= 1)
 
-def test_performance():
-    def solve_sudoku(filepath, nb_solution):
-        sudoku = load_from_text_file(filepath)
-        s = Solver()
-        s.max_solution = nb_solution
-        solutions = s.solve(sudoku)
-        for solution in solutions:
-            assert(is_valid_solution(solution))
-        assert(len(solutions) <= s.max_solution)
+def test_hard():
+    sudoku = load_from_text_file("../DATA/hard.txt")
+    s = Solver()
+    s.max_solution = 10
+    solutions = s.solve(sudoku)
+    for solution in solutions:
+        assert(is_valid_solution(solution))
+    assert(len(solutions) <= s.max_solution)
+    assert(len(solutions) >= 1)
 
-    solve_sudoku("../DATA/easy.txt",5)
-    solve_sudoku("../DATA/NearValidSolution.txt",5)
