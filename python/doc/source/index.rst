@@ -15,6 +15,11 @@ A dummy version of the backtracking algorithm is explained in the following vide
  However, this dummy implementation tends to be slow. 
  Several heuristics can be used to speed up the resolution.
 
+ I used the two heuristics described here: http://sdz.tdct.org/sdz/le-backtracking-par-l-exemple-resoudre-un-sudoku.html
+
+First, I precompute the possible solutions for each empty (Solver._init_possibility())
+Second, I change the traversal order to start with the (Solver._init_order())
+
 .. toctree::
    :maxdepth: 2
    :caption: List of the main files:
