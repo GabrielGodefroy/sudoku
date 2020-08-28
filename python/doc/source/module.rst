@@ -15,7 +15,6 @@ sudoku
 .. automodule:: sudoku 
    :members:
 
-
 solver.py
 ---------
 .. automodule:: sudoku.solver

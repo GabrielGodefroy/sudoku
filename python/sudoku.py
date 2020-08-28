@@ -29,14 +29,15 @@ def parse_arg():
 
 def main():
     args = parse_arg()
-    s = Solver()
-    s.max_solution = args.max_nb_sol
-    try:
+    
+    
+    try:   
+        s = Solver()
+        s.max_solution = args.max_nb_sol
         sudoku = load_from_text_file(args.filepath)
         solutions = s.solve(sudoku)
         for solution in solutions:
             print('\n'.join([' '.join([str(cell) for cell in row]) for row in solution]),end="\n\n")
-            
     except Exception as e:
         print(e)
 

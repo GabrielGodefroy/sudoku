@@ -1,4 +1,5 @@
 import numpy as np 
+import itertools
 
 # https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
 # https://www.youtube.com/watch?v=G_UYXzGuqvM
@@ -16,24 +17,53 @@ class Solver:
 	def solve(self,grid):
 		raise_error_if_input_not_valid(grid)
 		self.solutions = []
+
+		self.possibility = {}
+
+		for x, y in itertools.product(range(9),range(9)):
+			if grid[x,y] == 0:
+				pos_list = [e for e in range(1,10)]
+
+				for e in grid[x]:
+					if e in pos_list: pos_list.remove(e) 
+				for e in grid[:,y]:
+					if e in pos_list: pos_list.remove(e) 
+				x_init = (x//3)
+				y_init = (y//3)
+				for e in grid[x_init:x_init+3,y_init:y_init+3].flatten():
+					if e in pos_list: pos_list.remove(e) 
+				self.possibility[(x,y)] = pos_list
+
+		def nb_clues(ind,grid):
+			return len(self.possibility[ind])
+
+		
+		self.order = []
+		for x, y in itertools.product(range(9),range(9)):
+			if grid[x,y] == 0:
+				self.order.append((x,y))
+		self.order = sorted(self.order, key=lambda ind : nb_clues(ind,grid))
+
 		self._do_solve(grid)
 		return self.solutions
 
+	def _get_order(self):
+		return self.order
+		#return itertools.product(range(9),range(9))
 
 	def _do_solve(self, grid):
 		# enough solutions were found
 		if(len(self.solutions)>=self.max_solution):
 			return
-
-		for x in range(9):
-			for y in range(9):
-				if grid[x,y] == 0:
-					for n in range(1,10):
-						if self.is_possible_value(x,y, n, grid):
-							grid[x,y] = n
-							self._do_solve(grid)
-							grid[x,y] = 0
-					return
+			
+		for x,y in self._get_order():
+			if grid[x,y] == 0:
+				for n in self.possibility[(x,y)]:
+					if self.is_possible_value(x,y, n, grid):
+						grid[x,y] = n
+						self._do_solve(grid)
+						grid[x,y] = 0
+				return
 		#print(np.array(grid),'\n')
 		self.solutions.append(np.array(grid))
 		#print("solutions", self.solutions, len(self.solutions))
