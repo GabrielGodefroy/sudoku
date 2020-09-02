@@ -1,17 +1,13 @@
 import numpy as np
-import itertools
+from itertools import product
 
 from sudoku.loader import raise_error_if_input_not_valid
-
-""" 
-Solver for the sudoku puzzle
-"""
 
 # https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
 # https://www.youtube.com/watch?v=G_UYXzGuqvM
 # https://github.com/JoeKarlsson/python-sudoku-generator-solver/blob/master/sudoku.py
 
-class Solver:
+class SolverBacktracking:
     """ Solves a sudoku puzzle using a backtracking algorithm
 	
 	Returns 0, 1 or several solution(s). 
@@ -27,79 +23,76 @@ class Solver:
         self.max_solution = max_solution
 
     def solve(self, grid):
-        
         raise_error_if_input_not_valid(grid)
         self.raise_error_if_max_solution_not_valid()
 
-        if self.max_solution < 1:
-            raise ValueError(
-                "Maximum number of solutions to search should be 1 or more"
-            )
+        self.grid = grid        
+        self._init_possibility()
 
-        self._init_possibility(grid)
-        self._init_order(grid)
+        # starting by the values that have more clues tend to speed up the process
+        indices_to_search = [(x,y) for x, y in product(range(9), range(9)) if self.grid[x, y] == 0]
+        self.order = sorted(indices_to_search, key=lambda ind: sum(self.on_line[ind[0]])+sum(self.on_colm[ind[1]])\
+            +sum(self.on_subs[(ind[0]//3)*3+(ind[1]//3)] ), reverse=True )
 
         self.solutions = []
-        self._do_solve(grid)
-        #print(self.solutions)
+
+        self.cur_ind = 0
+        self._do_solve()
+
         return self.solutions
 
+    def _init_possibility(self):
+        ''' Create 3 matrix storing the values that can has not been assigned
+        to a line, a column or a box '''
+
+        self.on_line = np.ndarray((9,9),dtype=bool) 
+        self.on_line.fill(False)
+        self.on_colm = self.on_line.copy()
+        self.on_subs = self.on_line.copy()
+
+        for line_ind in range(9):
+            for e in self.grid[line_ind]:
+                if e > 0:
+                    self.on_line[line_ind][e-1] = True 
+        for col_ind in range(9):
+            for e in self.grid[:,col_ind]:
+                if e > 0:
+                    self.on_colm[col_ind][e-1] = True 
+        for x_ in range(3):
+            for y_ in range(3):
+                sq_ind = x_*3 +y_
+                for e in self.grid[x_*3 : x_*3 + 3, y_*3 : y_*3 + 3].flatten():
+                    if e > 0:
+                        self.on_subs[sq_ind][e-1] = True 
 
 
 
-    def _init_possibility(self, grid):
-        """ Build a dictionnary of possible values for each cell to fill """
-        self.possibility = {}
-        for x, y in itertools.product(range(9), range(9)):
-            if grid[x, y] == 0:
+    def _do_solve(self):
 
-                cur_post = [e for e in range(1, 10)]
-                if grid[x, y] == 0:
-                    for e in grid[x]:
-                        if e in cur_post:
-                            cur_post.remove(e)
-                    for e in grid[:, y]:
-                        if e in cur_post:
-                            cur_post.remove(e)
-                    x_init = (x // 3)*3
-                    y_init = (y // 3)*3
-                    assert(len(grid[x_init : x_init + 3, y_init : y_init + 3].flatten())==9)
-                    for e in grid[x_init : x_init + 3, y_init : y_init + 3].flatten():
-                        if e in cur_post:
-                            cur_post.remove(e)
-                self.possibility[(x, y)] = cur_post 
-
-
-    def _init_order(self, grid):
-        """ Build a traversing order, from the cells with less possible
-        values to the cells with more
-        
-        Notes:
-            This order is not updated while solving the sudoku
-        """
-        self.order = []
-        for x, y in itertools.product(range(9), range(9)):
-            if grid[x, y] == 0:
-                self.order.append((x, y))
-        self.order = sorted(self.order, key=lambda ind: len(self.possibility[ind]))
-        #print("possib",self.possibility)
-        #print("order ", self.order)
-
-    def _do_solve(self, grid):
-        # enough solutions were found
         if self._enough_solution_found():
             return
-        for x, y in self.order:  # itertools.product(range(9),range(9)): # 
-            if grid[x, y] == 0:
-                for n in self.possibility[(x, y)]:  # range(1,10): # 
-                    if self.is_possible_value(x, y, n, grid):
-                        grid[x, y] = n
-                        self._do_solve(grid)
-                        grid[x, y] = 0
-                return
-        self.solutions.append(np.array(grid))
 
-    def is_possible_value(self, x, y, n, sudoku):
+        for x,y in self.order[self.cur_ind:]: # itertools.product(range(9),range(9)): #
+            if self.grid[x, y] == 0:
+                sq_ind = (x//3)*3+(y//3)
+                for n in  range(1,10): 
+                    if self.is_possible_value(x, y, sq_ind, n):
+                        
+                        self.cur_ind+=1
+                        self.grid[x, y] = n
+                        self.on_line[x,n-1] = self.on_colm[y,n-1] = self.on_subs[sq_ind,n-1] = True
+                        
+                        self._do_solve()
+
+                        self.cur_ind-=1
+                        self.grid[x, y] = 0
+                        self.on_line[x,n-1] = self.on_colm[y,n-1] = self.on_subs[sq_ind,n-1] = False
+                return
+        self.solutions.append(np.array(self.grid))
+
+
+
+    def is_possible_value(self, x, y, sq_ind, n):
         """ Check whether n can possibly be added in the
 			partially solved sudoku grid (at x,y position)
 
@@ -111,31 +104,13 @@ class Solver:
 
 		Returns:
 			bool: True if n is not already in a line, column, or subsquare
-
-        TODO
-
-            This is the critical function. Need to be O(1)
-
-python -m cProfile -s tottime  tests/tmp.py
-    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-  5115176   30.355    0.000   30.355    0.000 solver.py:102(is_possible_value)
-1110027/1   14.581    0.000   45.251   45.251 solver.py:88(_do_solve)
-  1110027    0.245    0.000    0.315    0.000 solver.py:130(_enough_solution_found)
+        
+        Note:
+            This is a critical function 
 		"""
 
-        for i in range(0, 9):
-            if sudoku[i, y] == n:
-                return False
-        for i in range(0, 9):
-            if sudoku[x, i] == n:
-                return False
-        x0 = (x // 3) * 3
-        y0 = (y // 3) * 3
-        for i in range(0, 3):
-            for j in range(0, 3):
-                if sudoku[x0 + i, y0 + j] == n:
-                    return False
-        return True
+        return self.on_line[x,n-1] == False and self.on_colm[y,n-1] == False and self.on_subs[sq_ind][n-1] == False 
+
 
     def _enough_solution_found(self):
         return len(self.solutions) >= self.max_solution
