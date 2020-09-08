@@ -1,5 +1,13 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QGridLayout, QWidget, QLineEdit, QFileDialog
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QPushButton,
+    QGridLayout,
+    QWidget,
+    QLineEdit,
+    QFileDialog,
+    QStatusBar,
+)
 from PyQt5.QtGui import QIntValidator, QFont
 from PyQt5.QtCore import Qt
 
@@ -7,164 +15,185 @@ import sys
 import numpy as np
 
 from sudoku.loader import load_from_text_file
-from sudoku.solver import Solver
+from sudoku.solver import SolverBacktracking, is_valid_solution # TODO SolverAlgoX, 
 
-def main():
+""" Graphical interface using PyQt """
 
+class QSudokuGui(QMainWindow):
+    """ Graphical interface using PyQt """
 
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.setWindowTitle("Sudoku")
+        self.setGeometry(200, 200, 20, 20)
 
-    app = QApplication(sys.argv)
-    win = QMainWindow()
-    win.setGeometry(200,200,20,20)
+        self.setStatusBar(QStatusBar(self))
+        self.statusBar().setFont(QFont("Arial", 16))
+        self.statusBar().showMessage(" " * 10 + "Welcome to the sudoku interface", 2000)
 
-    win.setWindowTitle("Sudoku") 
-   
-    main_layout = QGridLayout()
-    win.setCentralWidget(QWidget(win))
-    win.centralWidget().setLayout(main_layout)
+        self.setCentralWidget(QSudokuGrid(self))
 
-    q1 = QWidget(win.centralWidget())
-    q2 = QWidget(win.centralWidget())
-    main_layout.addWidget(q1, 0, 0)
-    main_layout.addWidget(q2, 1, 0)
-    
+        self.setFixedSize(self.sizeHint())
+        self.setFixedSize(self.size())
 
-    grid_layout = QGridLayout()
-    grid_layout.setSpacing(10)
-    q1.setLayout(grid_layout)
+class QSudokuGrid(QWidget):
+    """ Sudoku grid and button """
 
-
-    grid_layout2 = QGridLayout()
-    grid_layout2.setSpacing(10)
-    q2.setLayout(grid_layout2)
-
-    def create_line_edit(x,y):
+    def __init__(self, *args):
+        QWidget.__init__(self, *args)
         # https://htmlcolorcodes.com/fr/
-        colors = ["#A569BD", "#BB8FCE",  "#D2B4DE", 
-                "#85C1E9","#3498DB","#AED6F1",
-                "#FAD7A0","#FDEBD0","#F39C12"
-                ]
+        self.colors = (
+            "#A569BD",
+            "#BB8FCE",
+            "#D2B4DE",
+            "#85C1E9",
+            "#3498DB",
+            "#AED6F1",
+            "#FAD7A0",
+            "#FDEBD0",
+            "#F39C12",
+        )
 
-        lineedit = QLineEdit(win) 
-        lineedit.setValidator(QIntValidator(1,9))
-        lineedit.setFixedHeight(50)
-        lineedit.setFixedWidth(50)
-        lineedit.setFont(QFont('Arial', 16))
-        lineedit.setAlignment(Qt.AlignCenter)  
-        color = colors[(x//3)*3+(y//3)]
-        lineedit.setStyleSheet("background:{};".format(color))
+        self._create_button()
+        self._create_events()
 
-        return lineedit
+    def _create_button(self):
+        """ Creates the sudoku and the push button """
+        main_layout = QGridLayout()
+        self.setLayout(main_layout)
 
-    line_edits = []
-    for x in range(9):
-        line_edits.append([])
-        for y in range(9):
-            l = create_line_edit(x,y)
-            line_edits[-1].append(l) 
-            #button.setReadOnly(True)
-            grid_layout.addWidget(l, x, y)
+        self.q1 = QWidget(self)
+        self.q2 = QWidget(self)
+        main_layout.addWidget(self.q1, 0, 0)
+        main_layout.addWidget(self.q2, 1, 0)
 
-    load_button = QPushButton(q2)
-    load_button.setText("Load")
-    solv_button = QPushButton(q2)
-    solv_button.setText("Solve")
-    gnrt_button = QPushButton(q2)
-    gnrt_button.setText("Generate")
-    
-    
+        grid_layout = QGridLayout()
+        grid_layout.setSpacing(10)
+        self.q1.setLayout(grid_layout)
 
-    help_button = QPushButton(q2)
-    help_button.setText("Help")
-    chec_button = QPushButton(q2)
-    chec_button.setText("Check")
+        grid_layout2 = QGridLayout()
+        grid_layout2.setSpacing(10)
+        self.q2.setLayout(grid_layout2)
 
-    load_button.setFixedHeight(50)
-    solv_button.setFixedHeight(50)
-    gnrt_button.setFixedHeight(50)
-    help_button.setFixedHeight(50)
-    chec_button.setFixedHeight(50)
-    
-    load_button.setFont(QFont('Arial', 16))
-    solv_button.setFont(QFont('Arial', 16))
-    gnrt_button.setFont(QFont('Arial', 16))
-    help_button.setFont(QFont('Arial', 16))
-    chec_button.setFont(QFont('Arial', 16))
+        def _create_line_edit(x, y):
+            lineedit = QLineEdit(self)
+            lineedit.setValidator(QIntValidator(1, 9))
+            lineedit.setFixedHeight(50)
+            lineedit.setFixedWidth(50)
+            lineedit.setFont(QFont("Arial", 16))
+            lineedit.setAlignment(Qt.AlignCenter)
+            color = self.colors[(x // 3) * 3 + (y // 3)]
+            lineedit.reg = (x // 3) * 3 + (y // 3) + 1
+            lineedit.setStyleSheet(f"background:{color};")
+            return lineedit
 
-    grid_layout2.addWidget(load_button, 10, 0)
-    grid_layout2.addWidget(solv_button, 10, 1)
-    grid_layout2.addWidget(gnrt_button, 10, 2)
-    grid_layout2.addWidget(help_button, 10, 3)
-    grid_layout2.addWidget(chec_button, 10, 4)
+        self.line_edits = []
+        for x in range(9):
+            self.line_edits.append([])
+            for y in range(9):
+                l = _create_line_edit(x, y)
+                self.line_edits[-1].append(l)
+                # button.setReadOnly(True)
+                grid_layout.addWidget(l, x, y)
 
+        self.load_button = self._create_pushbutton("Load")
+        self.solv_button = self._create_pushbutton("Solve")
+        self.chec_button = self._create_pushbutton("Check")
+        self.clea_button = self._create_pushbutton("Clean")
 
+        grid_layout2.addWidget(self.load_button, 10, 0)
+        grid_layout2.addWidget(self.solv_button, 10, 1)
+        grid_layout2.addWidget(self.clea_button, 10, 2)
+        grid_layout2.addWidget(self.chec_button, 10, 4)
 
-    def load_puzzle_from_text(arg=win):
-        filename = QFileDialog.getOpenFileName(win, 'Open File')
+    def check_slot(self):
+        clues = self.to_np_array()
+        if is_valid_solution(clues):
+            self.parentWidget().statusBar().showMessage(" " * 10 + "Well done!", 2000)
+        else:
+            self.parentWidget().statusBar().showMessage(
+                " " * 10 + "Something is not quite right...", 2000
+            )
+
+    def clean_slot(self):
+        for x in range(9):
+            for y in range(9):
+                v = 1 + (x // 3) * 3 + y // 3
+                color = self.colors[v - 1]
+                self.line_edits[x][y].setStyleSheet(f"background:{color};")
+                self.line_edits[x][y].reg = v
+
+                self.line_edits[x][y].setText("")
+                self.line_edits[x][y].setReadOnly(False)
+
+    def solve_slot(self):
+        clues = self.to_np_array()
+        try:
+            solver = SolverBacktracking(clues)
+            solution = solver.solve()
+            for x in range(9):
+                for y in range(9):
+                    v = solution[x, y]
+                    self.line_edits[x][y].setText(str(v))
+        except Exception as e:
+            print("Exception while solving the sudoku:\n\t", e)
+
+    def load_puzzle_from_text_slot(self):
+        filename = QFileDialog.getOpenFileName(self, 'Open File')
         if filename[0]:
-            try :
-                array = load_from_text_file(filename[0])
-            except Exception as e:
-                print(e)
-                return
-
+            array = load_from_text_file(filename[0])
+            
             for x in range(9):
                 for y in range(9):
                     v = array[x,y]
                     if(v>0):
-                        line_edits[x][y].setText(str(v))
-                        line_edits[x][y].setReadOnly(True)
-                        line_edits[x][y].setFont(QFont("Aria;", 18, QFont.Bold))
+                        self.line_edits[x][y].setText(str(v))
+                        self.line_edits[x][y].setReadOnly(True)
+                        self.line_edits[x][y].setFont(QFont("Aria;", 18, QFont.Bold))
                     else :
-                        line_edits[x][y].setText("")
-                        line_edits[x][y].setReadOnly(False)
-                        line_edits[x][y].setFont(QFont("Aria;", 16))
+                        self.line_edits[x][y].setText("")
+                        self.line_edits[x][y].setReadOnly(False)
+                        self.line_edits[x][y].setFont(QFont("Aria;", 16))
             #self.textedit.setText(openFileDialog)
 
-    def solve():
-        sudoku = to_np_array()
-        try:
-            s = Solver()
-            print(sudoku)
-            s.solve(sudoku)
-            solution = s.solutions
-            print("solution = ",solution)
-
-            if(len(solution)==0):
-                print("No solution where found")
-            else :
-                solution = solution[0]
-                for x in range(9):
-                    for y in range(9):
-                        v = solution[x,y]
-                        line_edits[x][y].setText(str(v))
-
-        except Exception as e:
-            print(e)
-
-
-    def to_np_array():
-        result = np.ndarray((9,9),dtype=int)
+    def to_np_array(self):
+        clues = np.ndarray((9, 9), dtype=int)
         for x in range(9):
             for y in range(9):
-                r = line_edits[x][y].text()
-
-                if(r=="" or r=="0"):
+                r = self.line_edits[x][y].text()
+                if r == "" or r == "0":
                     r = 0
-                else :
-                    r = str(r)
-                result[x,y] = r
+                else:
+                    r = int(r)
+                clues[x, y] = r
+        return clues
 
-        return result
+    def _create_events(self):
+        self.load_button.clicked.connect(self.load_puzzle_from_text_slot)
+        self.solv_button.clicked.connect(self.solve_slot)
+        self.clea_button.clicked.connect(self.clean_slot)
+        self.chec_button.clicked.connect(self.check_slot)
+
+    def _create_pushbutton(self, text):
+        button = QPushButton(self.q2)
+        button.setText(text)
+        button.setFixedHeight(50)
+        button.setFont(QFont("Arial", 16))
+        return button
 
 
-    load_button.clicked.connect(load_puzzle_from_text) 
-    solv_button.clicked.connect(solve) 
+def main():
+    """ Starts the PyQt application """
+    app = QApplication(sys.argv)
 
-
-    win.setFixedSize(win.sizeHint())
-    win.setFixedSize(win.size())
+    win = QSudokuGui()
     win.show()
+
     sys.exit(app.exec_())
 
-main()  # make sure to call the function
+
+if __name__ == "__main__":
+    main()
+
+
+

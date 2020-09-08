@@ -8,12 +8,14 @@ and display one or several possible solution(s)
 import argparse
 
 from sudoku.loader import load_from_text_file
-from sudoku.solver import Solver 
+from sudoku.solver import SolverBacktracking
 
 def parse_arg():
     """ Create a argparse object, parses the arguments 
 
     Returns: the parsed arguments
+
+    TODO Try Click instead
     """
 
     parser = argparse.ArgumentParser(description='Solve a sudoku puzzle')
@@ -28,18 +30,12 @@ def parse_arg():
     return args 
 
 def main():
-    args = parse_arg()
-    
-    
-    try:   
-        s = Solver()
-        s.max_solution = args.max_nb_sol
-        sudoku = load_from_text_file(args.filepath)
-        solutions = s.solve(sudoku)
-        for solution in solutions:
-            print('\n'.join([' '.join([str(cell) for cell in row]) for row in solution]),end="\n\n")
-    except Exception as e:
-        print(e)
+    args = parse_arg()    
+    sudoku = load_from_text_file(args.filepath)
+    solver = SolverBacktracking(sudoku)
+    solution = solver.solve(sudoku)
+    print('\n'.join([' '.join([str(cell) for cell in row]) for row in solution]),end="\n\n")
+
 
 if __name__ == "__main__":
     main()
