@@ -6,6 +6,10 @@
 #include <assert.h>
 #include <iostream> // TODO tmp
 
+#include <sudoku/solver.h>
+
+using namespace sudoku ;
+
 /*! \file qt.cpp
  * 	\brief A graphical interface for to the sudoku, built using Qt
  * 
@@ -52,12 +56,12 @@ const std::array<std::string, 9> SudoGridCell::colors = {
     "#85C1E9", "#3498DB", "#AED6F1",
     "#FAD7A0", "#FDEBD0", "#F39C12"};
 
-class SudokuGrid : public QWidget
+class SudokuGridWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    SudokuGrid(QWidget *parent = nullptr) : QWidget(parent)
+    SudokuGridWidget(QWidget *parent = nullptr) : QWidget(parent)
     {
         QGridLayout* grid_layout = new QGridLayout();
         for (int line = 0; line < 9; ++line)
@@ -74,7 +78,7 @@ public:
         }
         setLayout(grid_layout);
     }
-    ~SudokuGrid() {}
+    ~SudokuGridWidget() {}
 
     // TODO array2d to_array2d() const {}
 
@@ -121,7 +125,7 @@ private:
     QPushButton *checButton;
     QPushButton *loadButton;
 
-    SudokuGrid* grid;
+    SudokuGridWidget* grid;
 };
 
 QSudoku::QSudoku()
@@ -132,7 +136,7 @@ QSudoku::QSudoku()
 
     QVBoxLayout *v_layout = new QVBoxLayout;
     
-    grid = new SudokuGrid(this);
+    grid = new SudokuGridWidget(this);
     v_layout->addWidget(grid);
 
     QWidget* container = new QWidget(this);
