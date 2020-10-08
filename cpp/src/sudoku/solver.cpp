@@ -267,6 +267,7 @@ namespace sudoku
     bool solve_algo_X(const SudokuGrid &clues, SudokuGrid &result)
     {
         DLX_Solver solver;
+        result.copy(clues); // todo
         bool is_solved = solver.solve(result);
         return is_solved;
     }

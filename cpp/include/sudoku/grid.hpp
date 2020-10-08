@@ -73,7 +73,7 @@ namespace sudoku
         SudokuGrid(const std::string&);
         static SudokuGrid load_from_file(const std::string& filepath);
 
-        bool is_set(int l, int c) const { return operator()(l, c) == 0; }
+        bool is_set(int l, int c) const { return operator()(l, c) != 0; }
         void unset(int l, int c) { operator()(l, c) = 0; }
 
         static unsigned short get_box(int l, int c)
@@ -83,7 +83,8 @@ namespace sudoku
 
         static bool is_solution(const SudokuGrid&);
 
-        // TODO is_valid_clues();
-        // bool is_valid_solution();
+        void copy(const SudokuGrid& rhs) {
+            values = rhs.values;
+        }
     };
 } // namespace sudoku

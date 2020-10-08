@@ -46,6 +46,9 @@ int main(int argc, char *argv[])
         SudokuGrid result ;
         bool has_solution = solve_algo_X(clues, result);
 
+        std::cout << clues << std::endl;
+
+
         if(has_solution) {
             std::cout << result << std::endl;
         } else {
