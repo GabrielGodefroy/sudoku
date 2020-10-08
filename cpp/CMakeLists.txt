@@ -26,7 +26,7 @@ function(compileExec execname)
 	target_link_libraries (${execname} sudoku-lib)
 endfunction()
 
-add_executable(cli src/sudoku/cli.cpp)
+add_executable(cli src/cli.cpp)
 target_link_libraries (cli sudoku-lib)
 
 
@@ -47,5 +47,5 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-add_executable(qt src/sudoku/qt.cpp)
+add_executable(qt src/qt.cpp)
 target_link_libraries (qt sudoku-lib Qt5::Widgets)
