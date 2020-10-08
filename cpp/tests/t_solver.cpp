@@ -5,22 +5,6 @@
 
 using namespace sudoku;
 
-static bool respect_constraints(const SudokuGrid &clues, const SudokuGrid &solution)
-{
-    for (int i = 0; i < 9; i++)
-    {
-        for (int j = 0; j < 9; j++)
-        {
-            if (clues.is_set(i, j) && clues(i, j) != solution(i, j))
-            {
-                std::cout << i << " " << j << " " << clues(i, j) << " " << solution(i, j) << std::endl;
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 TEST_CASE("Test the solver on an empty sudoku", "[solver9x9]")
 {
     SudokuGrid empty_grid;
@@ -28,7 +12,7 @@ TEST_CASE("Test the solver on an empty sudoku", "[solver9x9]")
     bool has_solution = solve_algo_X(empty_grid, solution);
     REQUIRE(has_solution == true);
     REQUIRE(SudokuGrid::is_solution(solution) == true);
-    REQUIRE(respect_constraints(empty_grid, solution));
+    REQUIRE(SudokuGrid::respect_constraints(empty_grid, solution));
 }
 
 TEST_CASE("Test the solver on an easy sudoku", "[solver9x9]")
@@ -38,7 +22,7 @@ TEST_CASE("Test the solver on an easy sudoku", "[solver9x9]")
     bool has_solution = solve_algo_X(easy_grid, solution);
     REQUIRE(has_solution == true);
     REQUIRE(SudokuGrid::is_solution(solution) == true);
-    REQUIRE(respect_constraints(easy_grid, solution) == true);
+    REQUIRE(SudokuGrid::respect_constraints(easy_grid, solution) == true);
 }
 
 TEST_CASE("Test the solver on an hard to backtrack sudoku", "[solver9x9]")
@@ -50,7 +34,7 @@ TEST_CASE("Test the solver on an hard to backtrack sudoku", "[solver9x9]")
     std::cout << hard_grid << std::endl;
     std::cout << solution << std::endl;
     REQUIRE(SudokuGrid::is_solution(solution) == true);
-    REQUIRE(respect_constraints(hard_grid, solution) == true);
+    REQUIRE(SudokuGrid::respect_constraints(hard_grid, solution) == true);
 }
 
 TEST_CASE("Test the function that check a solution sudoku on a partial solution", "[solver9x9]")

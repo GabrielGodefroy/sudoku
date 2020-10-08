@@ -82,6 +82,7 @@ namespace sudoku
         }
 
         static bool is_solution(const SudokuGrid&);
+        static bool respect_constraints(const SudokuGrid &clues, const SudokuGrid &solution);
 
         void copy(const SudokuGrid& rhs) {
             values = rhs.values;

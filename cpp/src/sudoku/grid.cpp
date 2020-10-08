@@ -37,6 +37,21 @@ namespace sudoku
         return SudokuGrid(str);
     }
 
+    bool SudokuGrid::respect_constraints(const SudokuGrid &clues, const SudokuGrid &solution)
+{
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if (clues.is_set(i, j) && clues(i, j) != solution(i, j))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
     bool SudokuGrid::is_solution(const SudokuGrid &grid)
     {
         typedef std::set<unsigned int> IN_REG;
