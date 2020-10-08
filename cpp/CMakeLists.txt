@@ -6,50 +6,46 @@ set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_FLAGS "-Wall -Werror")
 set (CMAKE_CXX_FLAGS "-o3")
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-
 include_directories(include)
 
 add_library (
 	sudoku-lib
+    src/sudoku/grid.cpp
 	src/sudoku/solver.cpp
 )
 
 
-
-
-
-# remove is unused
+# remove if unused
 function(compileExec execname)
 	add_executable(${execname}  src/sudoku/${execname}.cpp)
 	target_link_libraries (${execname} sudoku-lib)
 endfunction()
 
-compileExec(cli)
-#compileExec(qt)
+add_executable(cli src/sudoku/cli.cpp)
+target_link_libraries (cli sudoku-lib)
+
+
+
+add_library (
+	sudoku-test
+    tests/t_grid.cpp
+	tests/t_sudoku.cpp
+	tests/t_solver.cpp
+)
+add_executable(catch_test  tests/t_main.cpp)
+target_link_libraries (catch_test sudoku-test sudoku-lib)
+
+
+
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 add_executable(qt src/sudoku/qt.cpp)
 target_link_libraries (qt sudoku-lib Qt5::Widgets)
-
-
-
-
-enable_testing()
-
-function(compileTest testname)
-	add_executable(${testname}  tests/${testname}.cpp)
-	target_link_libraries (${testname} sudoku-lib)
-	add_test(${testname} ${testname})
-endfunction()
-
-compileTest(grid)
-#compileTest(event-manager)
-#compileTest(room-manager)
-#compileTest(dyn-room-manager)
