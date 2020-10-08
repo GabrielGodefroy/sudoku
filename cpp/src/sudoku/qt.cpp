@@ -7,8 +7,9 @@
 #include <iostream> // TODO tmp
 
 #include <sudoku/solver.h>
+#include <sudoku/grid.hpp>
 
-using namespace sudoku ;
+using namespace sudoku;
 
 /*! \file qt.cpp
  * 	\brief A graphical interface for to the sudoku, built using Qt
@@ -16,7 +17,6 @@ using namespace sudoku ;
  *  \TODO test and check memory leaks
  * 	\TODO add key event
  */
-
 
 class SudoGridCell : public QLineEdit
 {
@@ -39,7 +39,7 @@ public:
         assert(square_number < 9);
         set_color(colors[square_number]);
     }
-    int value() const { return text().toInt(); }
+    int value() const { return text().size() == 0 ? 0 : text().toInt(); }
 
 protected:
     const static std::array<std::string, 9> colors; // TODO constexpr ?
@@ -63,29 +63,54 @@ class SudokuGridWidget : public QWidget
 public:
     SudokuGridWidget(QWidget *parent = nullptr) : QWidget(parent)
     {
-        QGridLayout* grid_layout = new QGridLayout();
+        QGridLayout *grid_layout = new QGridLayout();
         for (int line = 0; line < 9; ++line)
         {
             for (int col = 0; col < 9; ++col)
             {
                 int r = (line / 3) * 3 + (col / 3);
 
-                auto cell = new SudoGridCell(this);
-                cell->set_in_square(r);
-                
-                grid_layout->addWidget(cell, line,col);
+                cells(line, col) = new SudoGridCell(this);
+                cells(line, col)->set_in_square(r);
+
+                grid_layout->addWidget(cells(line, col), line, col);
             }
         }
         setLayout(grid_layout);
     }
     ~SudokuGridWidget() {}
 
-    // TODO array2d to_array2d() const {}
+    SudokuGrid to_array2d() const
+    {
+        SudokuGrid result;
+        for (int l = 0; l < 9; l++)
+        {
+            for (int c = 0; c < 9; c++)
+            {
+                result(l, c) = cells(l, c)->value();
+            }
+        }
+        return result;
+    }
+
+    void fill_from_array2d(const SudokuGrid &g)
+    {
+        for (int l = 0; l < 9; l++)
+        {
+            for (int c = 0; c < 9; c++)
+            {
+                const int v = g(l, c);
+                if (v > 0)
+                    cells(l, c)->setText(QString(char('0' + v)));
+                else
+                    cells(l, c)->setText("");
+            }
+        }
+    }
 
 protected:
+    Array2D<SudoGridCell *, 9, 9> cells;
 };
-
-
 
 class QSudoku : public QMainWindow
 {
@@ -95,6 +120,7 @@ public:
     virtual ~QSudoku(){};
 
 private slots:
+    void empty();
     void load();
     void check();
     void solve();
@@ -110,22 +136,20 @@ protected:
     //	void init_toolbar();
     //	void init_event();
 
-private:
-    //QTextEdit 	*textEdit;
-    //QPushButton *quitButton;
-
-    //QString currentFile;
+    static constexpr unsigned int default_statusbar_timeout_ms = 2000;
 
 private:
+    QAction *emptyAction;
     QAction *loadAction;
     QAction *checkAction;
     QAction *solveAction;
 
+    QPushButton *emptyButton;
     QPushButton *solvButton;
     QPushButton *checButton;
     QPushButton *loadButton;
 
-    SudokuGridWidget* grid;
+    SudokuGridWidget *grid_widget;
 };
 
 QSudoku::QSudoku()
@@ -133,17 +157,19 @@ QSudoku::QSudoku()
     this->setWindowTitle("Play a Sudoku (C++/Qt version)");
     this->setGeometry(200, 200, 20, 20);
 
-
     QVBoxLayout *v_layout = new QVBoxLayout;
-    
-    grid = new SudokuGridWidget(this);
-    v_layout->addWidget(grid);
 
-    QWidget* container = new QWidget(this);
+    grid_widget = new SudokuGridWidget(this);
+    v_layout->addWidget(grid_widget);
+
+    QWidget *container = new QWidget(this);
     v_layout->addWidget(container);
 
     // TODO refactor
     QHBoxLayout *h_layout = new QHBoxLayout;
+    emptyButton = new QPushButton("&Empty", this);
+    emptyButton->setFont(QFont("Arial", 16));
+    h_layout->addWidget(emptyButton);
     loadButton = new QPushButton("&Load", this);
     loadButton->setFont(QFont("Arial", 16));
     h_layout->addWidget(loadButton);
@@ -159,200 +185,60 @@ QSudoku::QSudoku()
     this->setCentralWidget(new QWidget(this));
     this->centralWidget()->setLayout(v_layout);
 
+    this->setStatusBar(new QStatusBar(this));
 
-	//loadAction   = new QAction(tr("&Load"), this);
-	//connect(loadAction, &QAction::triggered, this, &QSudoku::load);
-    QObject::connect(loadButton, &QPushButton::clicked,this, &QSudoku::load);
-    QObject::connect(checButton, &QPushButton::clicked,this, &QSudoku::check);
-    QObject::connect(solvButton, &QPushButton::clicked,this, &QSudoku::solve);
-
-
-
-
+    QObject::connect(emptyButton, &QPushButton::clicked, this, &QSudoku::empty);
+    QObject::connect(loadButton, &QPushButton::clicked, this, &QSudoku::load);
+    QObject::connect(checButton, &QPushButton::clicked, this, &QSudoku::check);
+    QObject::connect(solvButton, &QPushButton::clicked, this, &QSudoku::solve);
 }
 
-void QSudoku::load() {
-    std::cout << " LOAD TODO " << std::endl;
+void QSudoku::empty()
+{
+    SudokuGrid g;
+    grid_widget->fill_from_array2d(g);
 }
 
+void QSudoku::load()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open"));
 
-void QSudoku::check() {
-    std::cout << " CHECK TODO " << std::endl;
-}
-
-
-void QSudoku::solve() {
-    std::cout << " SOLVE TODO " << std::endl;
-}
-
-/*
-
-QNotePad::QNotePad() : textEdit(new QTextEdit(this)), quitButton(new QPushButton("&Quit",this)){
-
-	this->setWindowTitle("A notepad showing photo (written in Qt)");
-	this->setMinimumSize(200, 200);
-
-	openAction   = new QAction(tr("&Open"), this);
-	saveAction   = new QAction(tr("&Save"), this);
-	saveAsAction = new QAction(tr("&Save As"), this);
-	exitAction   = new QAction(tr("&Exit"), this);
-    nextAction   = new QAction(tr("&Next"), this);
-    prevAction   = new QAction(tr("&Prev"), this);
-
-	connect(openAction, &QAction::triggered, this, &QNotePad::open);
-	connect(saveAction, &QAction::triggered, this, &QNotePad::save);
-	connect(saveAsAction, &QAction::triggered, this, &QNotePad::saveAs);
-	connect(exitAction, &QAction::triggered, this, &QNotePad::exit);
-    connect(nextAction, &QAction::triggered, this, &QNotePad::next);
-	connect(prevAction, &QAction::triggered, this, &QNotePad::prev);
-
-	init_event();
-
-	init_central_widget();
-	init_menubar();
-	init_toolbar();
-
-}
-
-QNotePad::~QNotePad(){
-    delete saveAsAction;
-    delete openAction;
-};
-void QNotePad::init_central_widget(){
-
-	QVBoxLayout* layout = new QVBoxLayout;
-	layout->addWidget(textEdit);
-	layout->addWidget(quitButton);
-	
-	this->setCentralWidget(new QWidget(this));
-    this->centralWidget()->setLayout(layout);
-    
-	textEdit->viewport()->setAutoFillBackground(false);
-	
-
-	next();
-
-}
-void QNotePad::init_event(){
-	QObject::connect(quitButton, &QPushButton::clicked,this, &QNotePad::exit);
-
-	key_event_to_slot['S']   = &QNotePad::save;
-	key_event_to_slot['Q']   = &QNotePad::exit;
-	key_event_to_slot['O']   = &QNotePad::open;
-    key_event_to_slot['N']   = &QNotePad::next;
-    key_event_to_slot['P']   = &QNotePad::prev;
-}
-
-
-void QNotePad::init_menubar() {
-
-       QMenuBar *qmb = new QMenuBar(this);
-
-        QMenu *fileMenu = qmb->addMenu("&Menu");
-		fileMenu->addAction(openAction);
-        fileMenu->addAction(saveAsAction);
-		fileMenu->addAction(saveAction);
-        fileMenu = qmb->addMenu("&Exit");
-
-        fileMenu->addAction("Exit", this, &QNotePad::close);
-
-        this->setMenuBar(qmb);
-}
-
-void QNotePad::init_toolbar() {
-		QToolBar* qtb = this->addToolBar("ToolBar");        
-        qtb->addAction(prevAction);
-        qtb->addAction(nextAction);
-}
-
-void QNotePad::open(){
-
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
-    tr("Text Files (*.txt);;C++ Files (*.cpp *.h)"));
-
-	if (fileName != "") {
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
-        return;
+    if (!filename.isEmpty())
+    {
+        SudokuGrid g = SudokuGrid::load_from_file(filename.toStdString());
+        grid_widget->fill_from_array2d(g);
     }
-    QTextStream in(&file);
-    textEdit->setText(in.readAll());
-    file.close();
 }
 
-}
+void QSudoku::check()
+{
+    SudokuGrid current_grid = grid_widget->to_array2d();
 
-
-void QNotePad::save(){
-     QString fileName;
-    // If we don't have a filename from before, get one.
-    if (currentFile.isEmpty()) {
-        fileName = QFileDialog::getSaveFileName(this, "Save");
-        currentFile = fileName;
-    } else {
-        fileName = currentFile;
+    if (SudokuGrid::is_solution(current_grid))
+    {
+        this->statusBar()->showMessage("Well done; this is a valid solution", default_statusbar_timeout_ms);
     }
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
-        return;
+    else
+    {
+        this->statusBar()->showMessage("Oups, you are not there yet!", default_statusbar_timeout_ms);
     }
-    setWindowTitle(fileName);
-    QTextStream out(&file);
-    QString text = textEdit->toPlainText();
-    out << text;
-    file.close();   
 }
 
-void QNotePad::saveAs(){
-    QString fileName = QFileDialog::getSaveFileName(this, "Save as");
-    QFile file(fileName);
+void QSudoku::solve()
+{
+    const SudokuGrid clues = grid_widget->to_array2d();
 
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
-        return;
+    SudokuGrid solution;
+    if (solve_algo_X(clues, solution))
+    {
+        grid_widget->fill_from_array2d(solution);
+        this->statusBar()->showMessage("Here is a valid solution!", default_statusbar_timeout_ms);
     }
-    currentFile = fileName;
-    setWindowTitle(fileName);
-    QTextStream out(&file);
-    QString text = textEdit->toPlainText();
-    out << text;
-    file.close();
+    else
+    {
+        this->statusBar()->showMessage("Oups, could not find a solution!", default_statusbar_timeout_ms);
+    }
 }
-
-void QNotePad::exit(){
-	 QCoreApplication::quit();
-}
-
-void QNotePad::next(){
-    photo_ind+=1;
-    if(photo_ind>=int(list_of_photos.size())) {photo_ind=0;}
-
-    QString stylesheet = stylesheet_template; 
-    stylesheet.replace(QRegularExpression("IMGNAME"), list_of_photos[photo_ind]);
-    textEdit->setStyleSheet(stylesheet);
-}	 
-
-void QNotePad::prev(){
-    photo_ind-=1;
-    if(photo_ind<0) {photo_ind=list_of_photos.size()-1;}
-
-    QString stylesheet = stylesheet_template; 
-    stylesheet.replace(QRegularExpression("IMGNAME"), list_of_photos[photo_ind]);
-    textEdit->setStyleSheet(stylesheet);
-}
-
-void QNotePad::keyPressEvent(QKeyEvent* e){
-	char curchar = char(e->key());
-	
-	auto it = key_event_to_slot.find(curchar);
-	if ( it != key_event_to_slot.end() ) {
-		const auto event = it->second;
-		(this->*event)();
-	}
-}
-*/
 
 int main(int argc, char *argv[])
 {
