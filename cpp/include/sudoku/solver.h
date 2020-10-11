@@ -2,8 +2,20 @@
 
 #include <sudoku/grid.hpp>
 
+/*! \file solver.h
+ * 	\brief Sudoku solver
+ */
+
 namespace sudoku
 {
+    /*! \brief Solvess the sudoku with given clues using DLX algorithm.
+     *  \return true if a solution was found, false otherwise.
+     * 
+     *  \see DLX_Solver
+     *  
+     */
+    bool solve_algo_X(const SudokuGrid &clues, SudokuGrid &result);
+
 
     class AbstractSudokuSolver
     {
@@ -11,21 +23,27 @@ namespace sudoku
         virtual bool solve(SudokuGrid &clues) = 0;
     };
 
+    /*! \brief A solver relying on dancing link implementation of algo X 
+     * 
+     * \see
+     *      http://mathieuturcotte.ca/textes/sudoku-dancing-links/
+     *      and
+     *      https://github.com/KarlHajal/DLX-Sudoku-Solver/blob/master/DLXSudokuSolver.cpp
+     *      for explaination of the algorithm used,
+     */
     class DLX_Solver : public AbstractSudokuSolver
     {
 
     public:
         DLX_Solver() : head(), headNode(&head){};
 
-        bool solve(SudokuGrid &clues)
+        bool solve(SudokuGrid &partial_solution)
         {
             isSolved = false;
             build_sparse_matrix(matrix);
             build_linked_list(matrix);
-            transfort_list_to_current_grid(clues);
-            search(0, clues);
-            if (!isSolved)
-                std::cout << "No Solution!" << std::endl;
+            transfort_list_to_current_grid(partial_solution);
+            search(0, partial_solution);
             return isSolved;
         }
 
@@ -57,46 +75,21 @@ namespace sudoku
         static constexpr int ROW_NB = SIZE * SIZE * SIZE;
         static constexpr int COL_NB = 4 * SIZE * SIZE;
 
-        Node head;
-        Node *headNode;
+        Node head ;
+        Node *headNode = nullptr;
         Node *solution[MAX_K];
         Node *orig_values[MAX_K];
 
         bool matrix[ROW_NB][COL_NB] = {{0}};
         bool isSolved = false;
 
-        //===============================================================================================================//
-        //---------------------------------------------DLX Functions-----------------------------------------------------//
-        //===============================================================================================================//
-
         void cover_column(Node *col);
         void uncover_column(Node *col);
-        void search(int k, SudokuGrid &clues);
+        void search(int k, SudokuGrid &partial_solution);
 
-        //===============================================================================================================//
-        //----------------------Functions to turn a Sudoku grid into an Exact Cover problem -----------------------------//
-        //===============================================================================================================//
-
-        //--------------------------BUILD THE INITIAL MATRIX CONTAINING ALL POSSIBILITIES--------------------------------//
         void build_sparse_matrix(bool matrix[ROW_NB][COL_NB]);
-
-        //-------------------BUILD A TOROIDAL DOUBLY LINKED LIST OUT OF THE SPARSE MATRIX-------------------------//
         void build_linked_list(bool matrix[ROW_NB][COL_NB]);
-
-        //-------------------COVERS VALUES THAT ARE ALREADY PRESENT IN THE GRID-------------------------//
         void transfort_list_to_current_grid(SudokuGrid &clues);
-
-        //===============================================================================================================//
-        //----------------------------------------------- Print Functions -----------------------------------------------//
-        //===============================================================================================================//
-
         void map_solution_to_grid(SudokuGrid &grid);
     };
-
-    /*! \brief TODO 
-    http://mathieuturcotte.ca/textes/sudoku-dancing-links/
-    https://github.com/KarlHajal/DLX-Sudoku-Solver/blob/master/DLXSudokuSolver.cpp
-    */
-    bool solve_algo_X(const SudokuGrid &clues, SudokuGrid &result);
-
-} // namespace sudoku
+} 

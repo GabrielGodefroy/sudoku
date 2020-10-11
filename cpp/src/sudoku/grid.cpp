@@ -5,7 +5,7 @@
 
 #include <assert.h>
 #include <set>
-
+#include <algorithm>
 #include <fstream>
 #include <streambuf>
 
@@ -14,17 +14,16 @@ namespace sudoku
 
     SudokuGrid::SudokuGrid(const std::string &representation)
     {
-
         int index = 0;
-
-        for (const char &c : representation)
-        {
+        auto &ref_values = values;
+        std::for_each(representation.begin(), representation.end(),
+                      [&index, &ref_values](const char &c) {
             if (c >= int('0') && c <= int('9'))
             {
-                values[index] = c - int('0');
+                ref_values[index] = c - int('0');
                 ++index;
-            }
-        }
+            } });
+
         assert(index == 81); // TODO exception
     }
 
@@ -38,46 +37,43 @@ namespace sudoku
     }
 
     bool SudokuGrid::respect_constraints(const SudokuGrid &clues, const SudokuGrid &solution)
-{
-    for (int i = 0; i < 9; i++)
     {
-        for (int j = 0; j < 9; j++)
+        for (ushort i = 0; i < 9; i++)
         {
-            if (clues.is_set(i, j) && clues(i, j) != solution(i, j))
+            for (ushort j = 0; j < 9; j++)
             {
-                return false;
+                if (clues.is_set(i, j) && clues(i, j) != solution(i, j))
+                {
+                    return false;
+                }
             }
         }
+        return true;
     }
-    return true;
-}
 
     bool SudokuGrid::is_solution(const SudokuGrid &grid)
     {
         typedef std::set<unsigned int> IN_REG;
-        std::array<IN_REG, 9*3> in_region;
+        std::array<IN_REG, 9 * 3> in_region;
 
-        for (int l = 0; l < 9; ++l)
+        for (ushort l = 0; l < 9; ++l)
         {
-            for (int c = 0; c < 9; ++c)
+            for (ushort c = 0; c < 9; ++c)
             {
-                int value = grid(l, c);
+                ushort value = grid(l, c);
                 if (value > 0)
                 {
-                    int r = SudokuGrid::get_box(l, c);
-                    in_region[l].insert(value);     // lines
-                    in_region[c+9].insert(value);   // columns
-                    in_region[r+18].insert(value);  // boxes
+                    ushort r = SudokuGrid::get_box(l, c);
+                    in_region[l].insert(value);      // lines
+                    in_region[c + 9].insert(value);  // columns
+                    in_region[r + 18].insert(value); // boxes
                 }
             }
         }
 
-        for (const auto& sets : in_region){
-            if(sets.size()!=9){
-                return false;
-            }
-        }
-        return true;
+        return std::all_of(in_region.begin(), in_region.end(), [](const IN_REG &reg) {
+            return reg.size() == 9;
+        });
     }
 
 } // namespace sudoku

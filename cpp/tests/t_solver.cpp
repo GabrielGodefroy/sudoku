@@ -31,8 +31,6 @@ TEST_CASE("Test the solver on an hard to backtrack sudoku", "[solver9x9]")
     SudokuGrid solution;
     bool has_solution = solve_algo_X(hard_grid, solution);
     REQUIRE(has_solution == true);
-    std::cout << hard_grid << std::endl;
-    std::cout << solution << std::endl;
     REQUIRE(SudokuGrid::is_solution(solution) == true);
     REQUIRE(SudokuGrid::respect_constraints(hard_grid, solution) == true);
 }

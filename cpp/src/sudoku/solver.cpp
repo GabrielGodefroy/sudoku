@@ -35,15 +35,14 @@ namespace sudoku
         col->right->left = col;
     }
 
-    void DLX_Solver::search(int k, SudokuGrid &clues)
+    void DLX_Solver::search(int k, SudokuGrid &partial_solution)
     {
-
         if (isSolved)
             return;
 
         if (headNode->right == headNode)
         {
-            map_solution_to_grid(clues);
+            map_solution_to_grid(partial_solution);
             isSolved = true;
             return;
         }
@@ -64,7 +63,7 @@ namespace sudoku
                 cover_column(node->head);
             }
 
-            search(k + 1, clues);
+            search(k + 1, partial_solution);
 
             temp = solution[k];
             solution[k] = nullptr;
@@ -104,7 +103,7 @@ namespace sudoku
             temp = newNode;
         }
 
-    DLX_Solver::Node::ID id = {0, 1, 1};
+        DLX_Solver::Node::ID id = {0, 1, 1};
         //Add a Node for each 1 present in the sparse matrix and update Column Nodes accordingly
         for (int i = 0; i < ROW_NB; i++)
         {
@@ -229,7 +228,9 @@ namespace sudoku
     {
         int index = 0;
         for (int i = 0; i < SIZE; i++)
+        {
             for (int j = 0; j < SIZE; j++)
+            {
                 if (clues(i, j) > 0)
                 {
                     Node *Col = nullptr;
@@ -249,25 +250,27 @@ namespace sudoku
                             }
                     }
                 }
+            }
+        }
     }
 
     void DLX_Solver::map_solution_to_grid(SudokuGrid &grid)
-        {
+    {
 
-            for (int i = 0; solution[i] != nullptr; i++)
-            {
-                grid(solution[i]->id.row - 1, solution[i]->id.column - 1) = solution[i]->id.candidate;
-            }
-            for (int i = 0; orig_values[i] != nullptr; i++)
-            {
-                grid(orig_values[i]->id.row - 1, orig_values[i]->id.column - 1) = orig_values[i]->id.candidate;
-            }
+        for (int i = 0; solution[i] != nullptr; i++)
+        {
+            grid(solution[i]->id.row - 1, solution[i]->id.column - 1) = solution[i]->id.candidate;
         }
+        //for (int i = 0; orig_values[i] != nullptr; i++)
+        //{
+        //   grid(orig_values[i]->id.row - 1, orig_values[i]->id.column - 1) = orig_values[i]->id.candidate;
+        //}
+    }
 
     bool solve_algo_X(const SudokuGrid &clues, SudokuGrid &result)
     {
         DLX_Solver solver;
-        result.copy(clues); // todo
+        result = clues;
         bool is_solved = solver.solve(result);
         return is_solved;
     }
