@@ -12,11 +12,9 @@
 using namespace sudoku;
 
 /*! \file qt.cpp
- * 	\brief A graphical interface for to the sudoku, built using Qt
+ * 	\brief A graphical interface for the sudoku, built using Qt
  * 
  *  \TODO test and check memory leaks
- * 	\TODO add key event
- *  \TODO add tr()
  */
 
 /*! \brief To write and read the values of a sudoku cell */
@@ -27,12 +25,12 @@ public:
     SudoGridCell(QWidget *parent = nullptr, int square_number = 0);
     ~SudoGridCell();
     int value() const { return text().size() == 0 ? 0 : text().toInt(); }
+
 protected:
     void set_color(const std::string &color);
     void set_in_square(int square_number);
-    const static std::array<std::string, 9> colors_per_square; 
+    const static std::array<std::string, 9> colors_per_square;
 };
-
 
 /*! \brief Organizes 81 sudoku cells */
 class SudokuGridWidget : public QWidget
@@ -43,6 +41,7 @@ public:
     ~SudokuGridWidget() {}
     SudokuGrid to_array2d() const;
     void fill_from_array2d(const SudokuGrid &g);
+
 protected:
     Array2D<SudoGridCell *, 9, 9> cells;
 };
@@ -60,17 +59,7 @@ private slots:
     void check();
     void solve();
 
-    //private:
-    //	typedef void (QNotePad::*slotfunction)();
-    //	std::map<char, QNotePad::slotfunction> key_event_to_slot;
-
 protected:
-    //	void keyPressEvent(QKeyEvent *event);
-    //	void init_central_widget();
-    //	void init_menubar();
-    //	void init_toolbar();
-    //	void init_event();
-
     static constexpr unsigned int default_statusbar_timeout_ms = 2000;
 
 private:
@@ -87,9 +76,6 @@ private:
     SudokuGridWidget *grid_widget;
 };
 
-
-
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -98,9 +84,6 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-
-
-
 
 QSudoku::QSudoku()
 {
@@ -115,18 +98,17 @@ QSudoku::QSudoku()
     QWidget *container = new QWidget(this);
     v_layout->addWidget(container);
 
-    // TODO refactor
     QHBoxLayout *h_layout = new QHBoxLayout;
-    emptyButton = new QPushButton("&Empty", this);
+    emptyButton = new QPushButton(tr("&Empty"), this);
     emptyButton->setFont(QFont("Arial", 16));
     h_layout->addWidget(emptyButton);
-    loadButton = new QPushButton("&Load", this);
+    loadButton = new QPushButton(tr("&Load"), this);
     loadButton->setFont(QFont("Arial", 16));
     h_layout->addWidget(loadButton);
-    checButton = new QPushButton("&Check", this);
+    checButton = new QPushButton(tr("&Check"), this);
     checButton->setFont(QFont("Arial", 16));
     h_layout->addWidget(checButton);
-    solvButton = new QPushButton("&Solve", this);
+    solvButton = new QPushButton(tr("&Solve"), this);
     solvButton->setFont(QFont("Arial", 16));
     h_layout->addWidget(solvButton);
 
@@ -170,7 +152,7 @@ void QSudoku::check()
     }
     else
     {
-        this->statusBar()->showMessage("Oups, you are not there yet!", default_statusbar_timeout_ms);
+        this->statusBar()->showMessage(tr("Oups, you are not there yet!"), default_statusbar_timeout_ms);
     }
 }
 
@@ -182,11 +164,11 @@ void QSudoku::solve()
     if (solve_algo_X(clues, solution))
     {
         grid_widget->fill_from_array2d(solution);
-        this->statusBar()->showMessage("Here is a valid solution!", default_statusbar_timeout_ms);
+        this->statusBar()->showMessage(tr("Here is a valid solution!"), default_statusbar_timeout_ms);
     }
     else
     {
-        this->statusBar()->showMessage("Oups, could not find a solution!", default_statusbar_timeout_ms);
+        this->statusBar()->showMessage(tr("Oups, could not find a solution!"), default_statusbar_timeout_ms);
     }
 }
 
@@ -201,11 +183,12 @@ SudoGridCell::SudoGridCell(QWidget *parent, int square_number) : QLineEdit(paren
 }
 SudoGridCell::~SudoGridCell() {}
 
-void SudoGridCell::set_in_square(int square_number){
+void SudoGridCell::set_in_square(int square_number)
+{
     set_color(colors_per_square[square_number]);
 }
 
-    void SudoGridCell::set_color(const std::string &color)
+void SudoGridCell::set_color(const std::string &color)
 {
     QPalette palette;
     palette.setColor(QPalette::Base, QColor(color.c_str()));
@@ -217,55 +200,43 @@ const std::array<std::string, 9> SudoGridCell::colors_per_square = {
     "#85C1E9", "#3498DB", "#AED6F1",
     "#FAD7A0", "#FDEBD0", "#F39C12"};
 
-
-
-
-
-
-
-
-    SudokuGridWidget::SudokuGridWidget(QWidget *parent) : QWidget(parent)
+SudokuGridWidget::SudokuGridWidget(QWidget *parent) : QWidget(parent)
+{
+    QGridLayout *grid_layout = new QGridLayout();
+    for (int line = 0; line < 9; ++line)
     {
-        QGridLayout *grid_layout = new QGridLayout();
-        for (int line = 0; line < 9; ++line)
+        for (int col = 0; col < 9; ++col)
         {
-            for (int col = 0; col < 9; ++col)
-            {
-                int r = (line / 3) * 3 + (col / 3);
-                cells(line, col) = new SudoGridCell(this, r);
-                grid_layout->addWidget(cells(line, col), line, col);
-            }
+            int r = (line / 3) * 3 + (col / 3);
+            cells(line, col) = new SudoGridCell(this, r);
+            grid_layout->addWidget(cells(line, col), line, col);
         }
-        setLayout(grid_layout);
     }
+    setLayout(grid_layout);
+}
 
-    SudokuGrid SudokuGridWidget::to_array2d() const
+SudokuGrid SudokuGridWidget::to_array2d() const
+{
+    SudokuGrid result;
+    for (int l = 0; l < 9; l++)
+        for (int c = 0; c < 9; c++)
+            result(l, c) = cells(l, c)->value();
+    return result;
+}
+
+void SudokuGridWidget::fill_from_array2d(const SudokuGrid &g)
+{
+    for (int l = 0; l < 9; l++)
     {
-        SudokuGrid result;
-        for (int l = 0; l < 9; l++)
+        for (int c = 0; c < 9; c++)
         {
-            for (int c = 0; c < 9; c++)
-            {
-                result(l, c) = cells(l, c)->value();
-            }
+            const int v = g(l, c);
+            if (v > 0)
+                cells(l, c)->setText(QString(char('0' + v)));
+            else
+                cells(l, c)->setText("");
         }
-        return result;
     }
-
-    void SudokuGridWidget::fill_from_array2d(const SudokuGrid &g)
-    {
-        for (int l = 0; l < 9; l++)
-        {
-            for (int c = 0; c < 9; c++)
-            {
-                const int v = g(l, c);
-                if (v > 0)
-                    cells(l, c)->setText(QString(char('0' + v)));
-                else
-                    cells(l, c)->setText("");
-            }
-        }
-    }    
+}
 
 #include "qt.moc"
-
