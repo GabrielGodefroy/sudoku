@@ -24,7 +24,7 @@ class QSudokuGui(QMainWindow):
 
     def __init__(self, *args):
         super().__init__(*args)
-        self.setWindowTitle("Sudoku")
+        self.setWindowTitle("Sudoku (Python3/PyQt version)")
         self.setGeometry(200, 200, 20, 20)
 
         self.setStatusBar(QStatusBar(self))
