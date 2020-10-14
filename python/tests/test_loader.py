@@ -8,22 +8,22 @@ DIM = 9
 def test_empty():
     """ Load an empty sudoku """
     result = load_from_text_file("../DATA/empty.txt")
-    assert((result == np.zeros((DIM,DIM), dtype=int)).all())
+    assert (result == np.zeros((DIM,DIM), dtype=int)).all()
 
 def test_ones():
     result = load_from_text_file("../DATA/ones.txt", check_validity=False)
     """ Load ones only """
-    assert((result == np.ones((DIM,DIM), dtype=int)).all())
+    assert (result == np.ones((DIM,DIM), dtype=int)).all() 
 
 def test_diag_ones():
     """ Load identity matrix """
     result = load_from_text_file("../DATA/diag-ones.txt", check_validity=False)
-    assert( (result == np.diag(np.ones(DIM,dtype=int))).all() )
+    assert (result == np.diag(np.ones(DIM,dtype=int))).all() 
 
 def test_diag():
     """ Load a diagonal matrix """
     result = load_from_text_file("../DATA/diag.txt")
-    assert( (result == np.diag([e for e in range(1,DIM+1)])).all() )
+    assert (result == np.diag([e for e in range(1,DIM+1)])).all() 
 
 def test_number():
     """ 8.5 should throw an error """
