@@ -1,8 +1,9 @@
 import numpy as np
 from itertools import product
+import copy
 
 from sudoku.loader import raise_error_if_input_not_valid
-from sudoku.grid import SudokuGrid
+from sudoku.grid import SudokuGrid, SudokuGridEfficient
 
 
 def respect_clues(clues, solution):
@@ -90,6 +91,41 @@ class SolverBacktracking:
                         self.grid[x, y] = 0
                 return
         self.solution = self.grid.grid.copy()
+
+
+class SolverBacktrackingEfficient:
+    """ TODO """
+
+    def __init__(self, np_clues):
+        self.set_clues(np_clues)
+
+    def solve(self):
+        self.grid = SudokuGridEfficient(self.np_clues)
+        self.solution = None
+        self.do_solve()
+        return self.solution
+
+    def set_clues(self, np_clues):
+        raise_error_if_input_not_valid(np_clues)
+        self.np_clues = np_clues.copy()
+
+    def do_solve(self):
+        if self.solution is not None:
+            return
+        self.grid.heuristic()
+        for x, y in self.grid.remaining:  #
+            if self.grid[x, y] == 0:
+                for n in range(1, 10):
+                    if self.grid.valid(x, y, n):
+                        possibilities, grid, remaining, nb_possibilities = self.grid.possibilities.copy(), self.grid.grid.copy(), self.grid.remaining.copy(), self.grid.nb_possibilities.copy()
+                        self.grid[x, y] = n
+                        self.do_solve()
+                        self.grid.possibilities, self.grid.grid, self.grid.remaining, self.grid.nb_possibilities = possibilities, grid, remaining, nb_possibilities
+                return
+        self.solution = self.grid.grid.copy()
+
+
+
 
 
 class SolverAlgoX:

@@ -22,7 +22,10 @@ Python is an efficient language for prototyping, so several algorithms are propo
  * Generate profiler results
  * Configure VSCode properly
 
+ * rm tmp.txt; python -m cProfile -s cumtime test_solver.py > tmp.txt ;  head -n 20 tmp.txt 
+
 # Inspired from:
+
  * https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
  * https://www.youtube.com/watch?v=G_UYXzGuqvM
  * https://github.com/JoeKarlsson/python-sudoku-generator-solver/blob/master/sudoku.py
