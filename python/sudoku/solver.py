@@ -94,8 +94,6 @@ class SolverBacktracking:
 
 
 class SolverBacktrackingEfficient:
-    """ TODO """
-
     def __init__(self, np_clues):
         self.set_clues(np_clues)
 
@@ -113,15 +111,14 @@ class SolverBacktrackingEfficient:
         if self.solution is not None:
             return
         self.grid.heuristic()
-        for x, y in self.grid.remaining:  #
-            if self.grid[x, y] == 0:
-                for n in range(1, 10):
-                    if self.grid.valid(x, y, n):
-                        possibilities, grid, remaining, nb_possibilities = self.grid.possibilities.copy(), self.grid.grid.copy(), self.grid.remaining.copy(), self.grid.nb_possibilities.copy()
-                        self.grid[x, y] = n
-                        self.do_solve()
-                        self.grid.possibilities, self.grid.grid, self.grid.remaining, self.grid.nb_possibilities = possibilities, grid, remaining, nb_possibilities
-                return
+        for index in self.grid.remaining:  
+            #np.random.shuffle(elem)
+            for n in self.grid.possible_values(index):
+                possibilities, grid, remaining, nb_possibilities = self.grid.possibilities.copy(), self.grid.grid.copy(), self.grid.remaining.copy(), self.grid.nb_possibilities.copy()
+                self.grid[index] = n
+                self.do_solve()
+                self.grid.possibilities, self.grid.grid, self.grid.remaining, self.grid.nb_possibilities = possibilities, grid, remaining, nb_possibilities
+            return
         self.solution = self.grid.grid.copy()
 
 

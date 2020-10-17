@@ -14,7 +14,6 @@ class SudokuGrid:
     This slows down the backtracking a lot!
     """
     def __init__(self, clues):
-        print("Construct SudokuGrid")
         self.clues = clues
         self.grid = self.clues.copy()
 
@@ -80,10 +79,12 @@ class SudokuGridEfficient(SudokuGrid):
 
         See SolverBacktrackingEfficient
     """
-    def __init__(self, clues):
+    def __init__(self, clues=None):
         """ Calls operator [] to copy the clues, so that the possibility 
             data structure is updated """
 
+        if clues is None:
+            clues = np.full((9,9),0,dtype=int)
         # TODO set up a list of neighbors to speed up things
         neighbors = []
         for r in range(9):
@@ -113,7 +114,6 @@ class SudokuGridEfficient(SudokuGrid):
         self.to_solve()
 
 
-
     def to_solve(self):
         self.remaining.sort(key=lambda ind: self.nb_possibilities[ind])
         return self.remaining
@@ -123,6 +123,9 @@ class SudokuGridEfficient(SudokuGrid):
         """ Checking validity is now o(1) """
         assert value > 0
         return self.possibilities[x, y, value - 1]
+
+    def possible_values(self, index):
+        return [ind+1 for ind,val in enumerate(self.possibilities[index]) if val == True]
 
     def __setitem__(self, index, value):
         """ Set an (unset) value and update the list of possibilities """
@@ -138,20 +141,12 @@ class SudokuGridEfficient(SudokuGrid):
                 self.possibilities[r, c, value - 1] = False
                 self.nb_possibilities[r,c]-=1
 
-    def tmp_setitem(self, index, value):
-        self.remaining.remove(index)
-        self.grid[index] = value
-        for r, c in SudokuGridEfficient.neighbors[index[0]][index[1]]:
-            if self.possibilities[r, c, value - 1]:
-                self.possibilities[r, c, value - 1] = False
-                self.nb_possibilities[r,c]-=1
-
     def heuristic(self):
         """ Fills all the cells where only one value can be set """
         remain = self.to_solve()
         while len(remain)>0 and np.sum(self.possibilities[remain[0]]) == 1:
             while len(remain)>0 and np.sum(self.possibilities[remain[0]]) == 1:
                 value = np.dot(self.possibilities[remain[0]], self.np_values)
-                self.tmp_setitem(remain[0],value)
+                self[remain[0]] = value
             remain = self.to_solve() 
 

@@ -28,11 +28,3 @@ def test_empty(clues_file, Solver):
     assert respect_clues(sudoku, solution)
     assert sudoku is not solution 
 
-def test_cur():
-    sudoku = load_from_text_file("../DATA/hard.txt")
-    solver = SolverBacktrackingEfficient(sudoku)
-    solution = solver.solve()
-    assert is_valid_solution(solution)
-    assert respect_clues(sudoku, solution)
-    assert sudoku is not solution 
-    print("Success!")
