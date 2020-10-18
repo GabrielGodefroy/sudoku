@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="sudoku/grid.js"></script>
+    <title>Sudoku solver (js)</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Coustard" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="css/style.css">
+
+
+  </head>
+
+
+  
+  <body>
+      <div id="centralpanel"> 
+        <h1 class="injected-text">Sudoku solver and generator</h1>
+      <div class="box yellow-box">
+
+        <div class="sudoku">
+            <input class="cell b0" id="r0c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b0" id="r0c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b0" id="r0c2" type="number" value="1" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r0c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r0c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r0c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r0c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r0c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r0c8" type="number" min="1" max="9" step="1"> 
+
+            <input class="cell b0" id="r1c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b0" id="r1c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b0" id="r1c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r1c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r1c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r1c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r1c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r1c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r1c8" type="number" min="1" max="9" step="1">             
+
+            <input class="cell b0" id="r2c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b0" id="r2c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b0" id="r2c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r2c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r2c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b1" id="r2c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r2c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r2c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b2" id="r2c8" type="number" min="1" max="9" step="1"> 
+
+            <input class="cell b3" id="r3c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b3" id="r3c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b3" id="r3c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r3c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r3c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r3c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r3c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r3c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r3c8" type="number" min="1" max="9" step="1"> 
+
+            <input class="cell b3" id="r4c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b3" id="r4c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b3" id="r4c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r4c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r4c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r4c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r4c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r4c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r4c8" type="number" min="1" max="9" step="1"> 
+
+            <input class="cell b3" id="r5c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b3" id="r5c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b3" id="r5c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r5c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r5c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b4" id="r5c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r5c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r5c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b5" id="r5c8" type="number" min="1" max="9" step="1"> 
+
+            <input class="cell b6" id="r6c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b6" id="r6c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b6" id="r6c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r6c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r6c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r6c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r6c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r6c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r6c8" type="number" min="1" max="9" step="1"> 
+
+            <input class="cell b6" id="r7c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b6" id="r7c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b6" id="r7c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r7c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r7c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r7c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r7c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r7c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r7c8" type="number" min="1" max="9" step="1"> 
+
+            <input class="cell b6" id="r8c0" type="number" min="1" max="9" step="1"> 
+            <input class="cell b6" id="r8c1" type="number" min="1" max="9" step="1"> 
+            <input class="cell b6" id="r8c2" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r8c3" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r8c4" type="number" min="1" max="9" step="1"> 
+            <input class="cell b7" id="r8c5" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r8c6" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r8c7" type="number" min="1" max="9" step="1"> 
+            <input class="cell b8" id="r8c8" type="number" min="1" max="9" step="1"> 
+ 
+
+        </div>
+
+        <script> console.log("here")
+
+        function clean_grid() {
+            for (let r = 0; r < 9 ; r++){
+                for (let c = 0; c < 9 ; c++){
+                    console.log(`r${r}c${c}`)   
+                    document.getElementById(`r${r}c${c}`).value=""
+                }
+            }
+         }   
+        </script>
+
+        <h5 class="box blue-box">
+
+            <button title="Generate a valid Sudoku grid" >Generate easy</button>
+            <button title="Generate a valid Sudoku grid" >Generate medium</button>
+            <button title="Generate a valid Sudoku grid" >Generate hard</button>
+            
+            <br>
+
+            <button title="Load a sudoku from a text file on your machine" >Load</button>
+            <button title="Solve the sudoku using the given clues">Solve</button>
+            <button title="Remove all values from current grid" onclick="clean_grid()">Clean </button>
+            <button title="Save as a text file">Export </button>
+
+    
+        </h5>
+      </div>
+    <header>
+      
+
+      <p>Why I did this!</p>
+    </header>
+
+    <main></main>
+
+    <form action="https://GabrielGodefroy.github.io/">
+        <input type="text" required placeholder="cat photo URL">
+        <button type="submit">Submit</button>
+
+    <footer class="box blue-box">
+      <h4>About me:</h4>
+
+      <ul>
+        <li>
+          <a href="https://github.com/GabrielGodefroy/sudoku"
+            >Link to the github repository</a
+          >
+        </li>
+        <li>
+          <a href="https://GabrielGodefroy.github.io/"
+            >Link to my personal webpage</a
+          >
+        </li>
+      </ul>
+
+    </footer>
+
+    </div>
+  </body>
+</html>

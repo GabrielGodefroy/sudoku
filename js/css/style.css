@@ -1,0 +1,135 @@
+html,
+body {
+  line-height: 1.6;
+  font-size: 18px;
+  color: #444;
+  background-color: blueviolet;
+  padding: 0 0px;
+  height: 99%;
+}
+#centralpanel {
+  background-color: lightgray;
+  margin: 0px auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  height: 99%;
+}
+
+h1,
+h2,
+h3 {
+  font-family: Coustard, Lobster, sans-serif;
+  line-height: 1.2;
+}
+
+em {
+  color: red;
+}
+
+button {
+  min-width: 100px;
+  margin: 0px 20px 0px 0px;
+  padding: 10px;
+  font-family: Coustard;
+}
+
+.sudoku {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  grid-gap: 10px;
+  margin: 5px;
+}
+
+.cell {
+  background-color: chocolate;
+  min-width: 15px;
+  min-height: 25px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 1.2em;
+  border-radius: 10%;
+  border-style: none;
+}
+
+.cell.b0 {
+  background-color: #a569bd;
+}
+
+.cell.b1 {
+  background-color: #bb8fce;
+}
+
+.cell.b2 {
+  background-color: #d2b4de;
+}
+
+.cell.b3 {
+  background-color: #85c1e9;
+}
+.cell.b4 {
+  background-color: #3498db;
+}
+.cell.b5 {
+  background-color: #aed6f1;
+}
+.cell.b6 {
+  background-color: #fad7a0;
+}
+.cell.b7 {
+  background-color: #fdebd0;
+}
+.cell.b8 {
+  background-color: #f39c12;
+}
+
+/* Chrome, Safari, Edge, Opera 
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+*/
+
+/* Firefox 
+input[type=number] {
+    -moz-appearance: textfield;
+}
+*/
+
+.injected-text {
+  margin: 10px;
+  text-align: center;
+}
+
+.box {
+  border-style: solid;
+  border-color: black;
+  border-width: 5px;
+  text-align: justify;
+  flex-grow: 1;
+}
+
+.yellow-box {
+  background-color: #ccc;
+  padding: 10px;
+  flex-grow: 1;
+}
+
+.red-box {
+  background-color: crimson;
+  color: #fff;
+  padding: 0px;
+  margin: 0px;
+}
+
+.blue-box {
+  text-align: center;
+  background-color: lightskyblue;
+  color: #222;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  margin: 0px;
+}
