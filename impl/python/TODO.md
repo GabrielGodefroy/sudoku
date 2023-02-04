@@ -7,3 +7,4 @@
 
 - [ ] Implement one generator
 - [ ] Graphical interface 
+- [ ] Generate documentation page/website

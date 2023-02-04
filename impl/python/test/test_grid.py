@@ -61,7 +61,7 @@ def test_neighboorhood_1_0():
     ]
 
 
-def test_neighboorhood_1_0():
+def test_neighboorhood_4_4():
     assert get_neighboorhood_indices(4, 4) == [
         (0, 4),
         (1, 4),
