@@ -8,3 +8,4 @@
 - [ ] Implement one generator
 - [ ] Graphical interface 
 - [ ] Generate documentation page/website
+- [ ] Code coverage (https://deusyss.developpez.com/tutoriels/Python/Coverage/)

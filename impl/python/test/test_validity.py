@@ -46,6 +46,7 @@ def test_check_square():
     assert check_square(grid, 0, 0) is True
     assert check_square(grid, 1, 0) is False
     assert check_squares(grid) is False
+    
 
 
 def test_valid_grid():
@@ -65,3 +66,21 @@ def test_valid_grid():
         ]
     )
     assert check_solution(grid)
+
+def test_invalid_grid():
+    from sudoku.validity import check_solution
+
+    grid = np.array(
+        [
+            [4, 4, 3, 1, 7, 2, 8, 6, 5],
+            [7, 6, 5, 8, 9, 3, 2, 4, 1],
+            [8, 1, 2, 6, 4, 5, 7, 9, 3],
+            [5, 9, 6, 4, 8, 1, 3, 2, 7],
+            [1, 2, 8, 7, 3, 9, 6, 5, 4],
+            [4, 3, 7, 5, 2, 6, 1, 8, 9],
+            [2, 7, 9, 3, 5, 8, 4, 1, 6],
+            [6, 5, 4, 2, 1, 7, 9, 3, 8],
+            [3, 8, 1, 9, 6, 4, 5, 7, 2],
+        ]
+    )
+    assert check_solution(grid) is False

@@ -20,3 +20,9 @@ Launch unit tests:
 ```
 python -m pytest . # why not just pytest?
 ```
+
+Run coverage:
+```
+coverage run -m pytest
+coverage report -m
+```
