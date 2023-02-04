@@ -85,22 +85,24 @@ def test_neighboorhood_1_0():
         (8, 4),
     ]
 
+
 def test_get_neighboorhood_values_empty_grid():
     array = np.ndarray(shape=(9, 9))
     array.fill(0)
-    assert get_neighboorhood_values(1,1, array) == list()
-    assert get_neighboorhood_values(0,1, array) == list()
-    assert get_neighboorhood_values(1,8, array) == list()
-    assert get_neighboorhood_values(8,8, array) == list()
+    assert get_neighboorhood_values(1, 1, array) == list()
+    assert get_neighboorhood_values(0, 1, array) == list()
+    assert get_neighboorhood_values(1, 8, array) == list()
+    assert get_neighboorhood_values(8, 8, array) == list()
+
 
 def test_get_neighboorhood_values_non_empty_grid():
     array = np.ndarray(shape=(9, 9))
-    array[0,0] = 0
-    array[1,1] = 1
-    array[2,2] = 2
-    array[0,8] = 8
-    array[8,0] = 7
-    assert sorted(get_neighboorhood_values(0,0, array)) == [1,2,7,8]
-    assert sorted(get_neighboorhood_values(1,1, array)) == [2]
-    assert sorted(get_neighboorhood_values(1,8, array)) == [1,8]
-    assert sorted(get_neighboorhood_values(8,1, array)) == [1,7]
+    array[0, 0] = 0
+    array[1, 1] = 1
+    array[2, 2] = 2
+    array[0, 8] = 8
+    array[8, 0] = 7
+    assert sorted(get_neighboorhood_values(0, 0, array)) == [1, 2, 7, 8]
+    assert sorted(get_neighboorhood_values(1, 1, array)) == [2]
+    assert sorted(get_neighboorhood_values(1, 8, array)) == [1, 8]
+    assert sorted(get_neighboorhood_values(8, 1, array)) == [1, 7]
