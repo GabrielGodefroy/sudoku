@@ -96,5 +96,3 @@ def test_check_square():
     assert check_square(grid, 2, 1) is True
     assert check_square(grid, 2, 2) is True
     assert check_squares(grid) is False
-
-

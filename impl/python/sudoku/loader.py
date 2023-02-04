@@ -60,8 +60,6 @@ def check_square(sudoku: np.ndarray, sq_x_ind: int, sq_y_ind: int) -> bool:
             if sudoku[x][y] != 0
         ]
     )
-    print(values)
-
     return len(values) == len(set(values))
 
 
