@@ -46,7 +46,6 @@ def test_check_square():
     assert check_square(grid, 0, 0) is True
     assert check_square(grid, 1, 0) is False
     assert check_squares(grid) is False
-    
 
 
 def test_valid_grid():
@@ -67,6 +66,7 @@ def test_valid_grid():
     )
     assert check_solution(grid)
 
+
 def test_invalid_grid():
     from sudoku.validity import check_solution
 
@@ -84,3 +84,39 @@ def test_invalid_grid():
         ]
     )
     assert check_solution(grid) is False
+
+
+def test_match_empty_clues():
+    from sudoku.validity import grid_match_clues
+
+    clues = np.array([[0, 0], [0, 0]])
+    values = np.array([[1, 2], [3, 4]])
+    assert grid_match_clues(values, clues) is True
+    assert grid_match_clues(clues, values) is False
+
+
+def test_match_clues():
+    from sudoku.validity import grid_match_clues
+
+    clues = np.array([[1, 0], [0, 4]])
+    values = np.array([[1, 2], [3, 4]])
+    assert grid_match_clues(values, clues) is True
+    assert grid_match_clues(clues, values) is False
+
+
+def test_mismatch_clues():
+    from sudoku.validity import grid_match_clues
+
+    clues = np.array([[1, 0], [0, 4]])
+    values = np.array([[8, 0], [0, 4]])
+    assert grid_match_clues(values, clues) is False
+    assert grid_match_clues(clues, values) is False
+
+
+def test_mismatch_shape():
+    from sudoku.validity import grid_match_clues
+
+    clues = np.array([[0, 0, 0], [0, 0, 0]])
+    values = np.array([[0, 0], [0, 0]])
+    assert grid_match_clues(clues, values) is False
+    assert grid_match_clues(values, clues) is False

@@ -1,7 +1,11 @@
 import pytest
 import numpy as np
 
-from sudoku.grid import get_neighboorhood_indices, get_neighboorhood_values
+from sudoku.grid import (
+    get_neighboorhood_indices,
+    get_neighboorhood_values,
+    get_candidate_values,
+)
 
 
 def test_neighboorhood_raise():
@@ -106,3 +110,24 @@ def test_get_neighboorhood_values_non_empty_grid():
     assert sorted(get_neighboorhood_values(1, 1, array)) == [2]
     assert sorted(get_neighboorhood_values(1, 8, array)) == [1, 8]
     assert sorted(get_neighboorhood_values(8, 1, array)) == [1, 7]
+
+
+def test_get_candidate_values_on_empty_grid():
+    clues = np.ndarray(shape=(9, 9))
+    clues.fill(0)
+    assert sorted(get_candidate_values(0, 0, clues)) == [i for i in range(1, 10)]
+    assert sorted(get_candidate_values(1, 5, clues)) == [i for i in range(1, 10)]
+    assert sorted(get_candidate_values(8, 8, clues)) == [i for i in range(1, 10)]
+
+
+def test_get_candidate_values_on_non_empty_grid():
+    array = np.ndarray(shape=(9, 9))
+    array[0, 0] = 0
+    array[1, 1] = 1
+    array[2, 2] = 2
+    array[0, 8] = 8
+    array[8, 0] = 7
+    assert sorted(get_candidate_values(0, 0, array)) == [3, 4, 5, 6, 9]
+    assert sorted(get_candidate_values(1, 1, array)) == [1, 3, 4, 5, 6, 7, 8, 9]
+    assert sorted(get_candidate_values(1, 8, array)) == [2, 3, 4, 5, 6, 7, 9]
+    assert sorted(get_candidate_values(8, 1, array)) == [2, 3, 4, 5, 6, 8, 9]

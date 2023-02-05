@@ -45,6 +45,13 @@ def check_squares(sudoku: np.ndarray) -> bool:
     return True
 
 
+def grid_match_clues(solution: np.ndarray, clues: np.ndarray) -> bool:
+    if solution.shape != clues.shape:
+        return False
+
+    return bool(np.logical_or(clues == 0, solution == clues).all())
+
+
 def check_solution(grid: np.ndarray) -> bool:
     for functor in [check_squares, check_lines, check_columns]:
         if functor(grid) is False:
