@@ -1,12 +1,17 @@
-- [ ] Use black/flake8
-- [ ] Add a pre-commit
-- [ ] Use vscode
-- [ ] Proper doc string
 - [x] Implement one solver
-- [ ] Implement one app
+- [x] Implement one app
+- [ ] Add CI
+- [ ] Add a pre-commit
+  - [ ] Use black/flake8
+  - [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
+- [ ] Use vscode
 
-- [ ] Implement one generator
-- [ ] Graphical interface 
+- [ ] Proper doc string
 - [ ] Generate documentation page/website
-- [ ] Code coverage (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
+
 - [ ] Implement more efficient solvers (and benchmark)
+
+- [ ] Graphical interface using pyqt
+- [ ] Implement one grid generator
+
+- [ ] Test the cli from an external program
