@@ -1,4 +1,4 @@
-from sudoku.loader import load_from_text_file, raise_error_if_input_not_valid
+from sudoku.loader import load_from_text_file
 
 from sudoku.solver.solver import solve, SolverKeyError
 
@@ -55,18 +55,17 @@ def solve_interface(filename, strategy):
         print(e.strerror)
         sys.exit(ExitStatus.FILE_NOT_FOUND)
     except ValueError as e:
-        print(f"Input is not valid")
+        print(f"Input is not valid\n{str(e)}")
         sys.exit(ExitStatus.INVALID_INPUT)
 
     try:
         solution = solve(sudoku, strategy)
     except SolverKeyError as e:
-        print("Unknown solver strategy")
+        print(f"Unknown solver strategy\n{str(e)}")
         sys.exit(ExitStatus.INVALID_INPUT)
 
-
     if solution is None:
-        print(f"No solution found for hint")
+        print("No solution found for hint")
         sys.exit(ExitStatus.NO_SOLUTION_FOUND)
 
     sys.exit(ExitStatus.OK)
