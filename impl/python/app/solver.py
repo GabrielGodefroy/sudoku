@@ -1,5 +1,6 @@
 from sudoku.loader import load_from_text_file, raise_error_if_input_not_valid
-from sudoku.solver.backtracking import solve
+
+from sudoku.solver.solver import solve, SolverKeyError
 
 import click
 
@@ -30,14 +31,14 @@ def pretty_print(sudoku: np.ndarray) -> None:
     help="Text file containing the sudoku puzzle to solve",
     default=None,
 )
-@click.option("--solver", help="Available solvers are TODO", default=None)
-def solve(filename, solver):
+@click.option("--strategy", help="Available strategys are TODO", default=None)
+def solve_interface(filename, strategy):
     """
     Command line interface for solving sudoku.
 
     Usage is:
 
-    >>> python solver.py --filename <filename> [--solver <solver>]
+    >>> python solver.py --filename <filename> [--strategy <strategy>]
 
     """
 
@@ -45,8 +46,8 @@ def solve(filename, solver):
         print("\nMissing arguments! Use --help.\n" "Aborting...\n")
         sys.exit(ExitStatus.INVALID_INPUT)
 
-    if solver is None:
-        solver == "backtracking"
+    if strategy is None:
+        strategy = "backtracking"
 
     try:
         sudoku = load_from_text_file(filename)
@@ -57,7 +58,12 @@ def solve(filename, solver):
         print(f"Input is not valid")
         sys.exit(ExitStatus.INVALID_INPUT)
 
-    solution = solve(sudoku)
+    try:
+        solution = solve(sudoku, strategy)
+    except SolverKeyError as e:
+        print("Unknown solver strategy")
+        sys.exit(ExitStatus.INVALID_INPUT)
+
 
     if solution is None:
         print(f"No solution found for hint")
@@ -67,4 +73,4 @@ def solve(filename, solver):
 
 
 if __name__ == "__main__":
-    solve()
+    solve_interface()
