@@ -2,10 +2,11 @@
 - [ ] Add a pre-commit
 - [ ] Use vscode
 - [ ] Proper doc string
-- [ ] Implement one solver
+- [x] Implement one solver
 - [ ] Implement one app
 
 - [ ] Implement one generator
 - [ ] Graphical interface 
 - [ ] Generate documentation page/website
 - [ ] Code coverage (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
+- [ ] Implement more efficient solvers (and benchmark)
