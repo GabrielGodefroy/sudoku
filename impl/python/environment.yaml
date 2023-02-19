@@ -39,7 +39,6 @@ dependencies:
   - pycodestyle=2.10.0=py310h06a4308_0
   - pyflakes=3.0.1=py310h06a4308_0
   - pytest=7.1.2=py310h06a4308_0
-  - python=3.10.9=h7a1cb2a_0
   - readline=8.2=h5eee18b_0
   - setuptools=65.6.3=py310h06a4308_0
   - six=1.16.0=pyhd3eb1b0_1
