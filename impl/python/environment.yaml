@@ -2,8 +2,8 @@ name: sudoku
 channels:
   - defaults
 dependencies:
-  - black=22.6.0=py310h06a4308_0
-  - click=8.0.4=py310h06a4308_0
-  - flake8=6.0.0=py310h06a4308_0
-  - numpy=1.23.5=py310hd5efca6_0
-  - pytest=7.1.2=py310h06a4308_0
+  - black
+  - click
+  - flake8
+  - numpy
+  - pytest
