@@ -18,3 +18,12 @@ jobs:
         activate-conda: false
     - run: conda --version
     - run: which python
+    - name: Create conda environment
+      working-directory: ./impl/python
+      run: |
+        conda env create -f environment.yaml
+        conda activate sudoku
+    - name: Run pytest
+      working-directory: ./impl/python
+      run: |
+        pytest
