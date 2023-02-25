@@ -1,12 +1,9 @@
 name: learn-github-actions
-run-name: ${{ github.actor }} pushed a new commit
+run-name: ${{ github.actor }} pushed a new commit - python implementation
 on: [push]
 jobs:
   run-pytest:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.8]
     steps:
       - uses: actions/checkout@v2
       - name: Show python version before conda install
