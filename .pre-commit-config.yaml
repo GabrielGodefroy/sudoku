@@ -18,3 +18,11 @@ repos:
     -   id: flake8
         args: ['--max-complexity=10', '--max-line-length=120', '--count']
         files: impl/python
+-   repo: local
+    hooks:
+    -   id: pytest
+        name: pytest
+        entry: bash -c '$CONDA_PREFIX/bin/pytest'
+        language: system
+        pass_filenames: false
+        types: [python]
