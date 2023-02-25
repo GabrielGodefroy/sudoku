@@ -6,13 +6,20 @@
  - __unit tests__: `pytest`
 
 
-## User guide 
+## User guide
 
 Start conda:
 
 ```
 conda env create -f environment.yaml
 conda activate sudoku
+```
+
+Update conda environment (https://stackoverflow.com/questions/42352841/)
+```
+conda env update --name sudoku --file environment.yml --prune
+conda env update --file environment.yml --prune
+
 ```
 
 Launch unit tests:
