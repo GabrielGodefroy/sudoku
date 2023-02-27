@@ -7,7 +7,7 @@
 - [x] Add a pre-commit
   - [x] Use black/flake8
   - [x] pytest
-- [ ] add a tag to run pytest only on fast test when pre-commit
+  - [x] add a tag to run pytest only on fast test when pre-commit
 - [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
 - [ ] Use vscode and devcontainer
 - [ ] Restrict python version in conda environment file
