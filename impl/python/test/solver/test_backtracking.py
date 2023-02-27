@@ -2,6 +2,7 @@ from sudoku.solver.backtracking import solve
 from sudoku.validity import check_solution, grid_match_clues
 
 import numpy as np
+import pytest
 
 
 def test_solve_on_empty_grid_1():
@@ -12,6 +13,7 @@ def test_solve_on_empty_grid_1():
     assert grid_match_clues(solution, clues)
 
 
+@pytest.mark.slow
 def test_solve_on_easy_grid():
     clues = np.array(
         [
@@ -31,6 +33,7 @@ def test_solve_on_easy_grid():
     assert grid_match_clues(solution, clues)
 
 
+@pytest.mark.slow
 def test_fail_to_solve_as_no_solution_should_return_none():
     clues = np.array(
         [

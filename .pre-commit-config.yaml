@@ -22,7 +22,7 @@ repos:
     hooks:
     -   id: pytest
         name: pytest
-        entry: bash -c '$CONDA_PREFIX/bin/pytest'
+        entry: bash -c '$CONDA_PREFIX/bin/pytest -m "not slow" --durations=0'
         language: system
         pass_filenames: false
         types: [python]
