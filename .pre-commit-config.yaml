@@ -1,0 +1,28 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: https://github.com/psf/black
+    rev: 22.6.0
+    hooks:
+    -   id: black
+-   repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+    -   id: flake8
+        args: ['--count', '--select=E9,F63,F7,F82']
+        files: impl/python
+    -   id: flake8
+        args: ['--max-complexity=10', '--max-line-length=120', '--count']
+        files: impl/python
+-   repo: local
+    hooks:
+    -   id: pytest
+        name: pytest
+        entry: bash -c '$CONDA_PREFIX/bin/pytest -m "not slow" --durations=0'
+        language: system
+        pass_filenames: false
+        types: [python]

@@ -3,8 +3,9 @@ channels:
   - defaults
 dependencies:
   - python=3.9
-  - black
+  - black=22.6.0
   - click
-  - flake8
+  - flake8=6.0.0
   - numpy
   - pytest
+  - pre-commit=2.20.0

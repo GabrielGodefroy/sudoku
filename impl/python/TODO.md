@@ -4,9 +4,11 @@
   - [x] [github actions](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions)
   - [x] [page for python](https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python)
   - [x] [python with conda](https://autobencoder.com/2020-08-24-conda-actions/)
-- [ ] Add a pre-commit
-  - [ ] Use black/flake8
-  - [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
+- [x] Add a pre-commit
+  - [x] Use black/flake8
+  - [x] pytest
+  - [x] add a tag to run pytest only on fast test when pre-commit
+- [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
 - [ ] Use vscode and devcontainer
 - [ ] Restrict python version in conda environment file
 
