@@ -1,6 +1,52 @@
+from itertools import product
+
 """
 Algorithm X modified from https://www.cs.mcgill.ca/~aassaf9/python/algorithm_x.html
+https://github.com/ShivanKaul/Sudoku-DLX
 """
+
+
+def get_X(dim: int):
+    N = dim * dim
+    """Represent the columns of the sparse matrix constraints"""
+    return (
+        # position constraint: only 1 number can occupy a cell
+        # cell index range from (0,0) to (N-1,N-1)
+        [("rc", rc) for rc in product(range(N), range(N))]
+        # row constraint: row indices ranges from 0 to N-1,
+        #                 number ranges from 0 to N
+        + [("rn", rn) for rn in product(range(N), range(1, N + 1))]
+        # column constraint
+        + [("cn", cn) for cn in product(range(N), range(1, N + 1))]
+        # region constraint
+        + [("bn", bn) for bn in product(range(N), range(1, N + 1))]
+    )
+
+
+def get_box_number(row: int, column: int, dim: int) -> int:
+    N = dim * dim
+    assert dim > 0, "Dimension should be positive"
+    assert row >= 0 and row < N, f"Row index should be between 0 and {N}"
+    assert column >= 0 and column < N, f"Column index should be between 0 and {N}"
+    return (row // dim) * dim + (column // dim)
+
+
+def get_Y(dim: int) -> dict:
+    """Represent the rows of the sparse matrix constraints"""
+    N = dim * dim
+    Y = dict()
+    for row, col, num in product(range(N), range(N), range(1, N + 1)):
+        # r: row, c: column, n: number
+        # for row and column, indices start at 0
+        # number range from 1 to 9
+        box = get_box_number(row, col, dim)
+        Y[(row, col, num)] = [
+            ("rc", (row, col)),
+            ("rn", (row, num)),
+            ("cn", (col, num)),
+            ("bn", (box, num)),
+        ]
+    return Y
 
 
 def exact_cover(X: set, Y: dict) -> dict:
