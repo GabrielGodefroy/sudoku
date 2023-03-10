@@ -1,8 +1,8 @@
-from sudoku.solver.algo_X import exact_cover, get_X, get_Y
+from sudoku.solver.algo_X import invert_coverage, get_X, get_Y
 import pytest
 
 
-def test_exact_cover_full():
+def test_invert_coverage_full():
     X = {1, 2, 3, 4, 5, 6, 7}
     Y = {
         "A": [1, 4, 7],
@@ -12,7 +12,7 @@ def test_exact_cover_full():
         "E": [2, 3, 6, 7],
         "F": [2, 7],
     }
-    result = exact_cover(X, Y)
+    result = invert_coverage(X, Y)
     assert result == {
         1: {"A", "B"},
         2: {"E", "F"},
@@ -24,7 +24,7 @@ def test_exact_cover_full():
     }
 
 
-def test_exact_cover_missing_in_X():
+def test_invert_coverage_missing_in_X():
     X = {1, 2, 3, 4}
     Y = {
         "A": [1, 4, 7],
@@ -35,17 +35,17 @@ def test_exact_cover_missing_in_X():
         "F": [2, 7],
     }
     with pytest.raises(KeyError):
-        exact_cover(X, Y)
+        invert_coverage(X, Y)
 
 
-def test_exact_cover_missing_in_Y():
+def test_invert_coverage_missing_in_Y():
     X = {1, 2, 3, 4, 5}
     Y = {"A": [1, 3, 5], "B": [1, 4]}
-    result = exact_cover(X, Y)
+    result = invert_coverage(X, Y)
     assert result == {1: {"B", "A"}, 2: set(), 3: {"A"}, 4: {"B"}, 5: {"A"}}
 
 
-def test_exact_cover_empty_X():
+def test_invert_coverage_empty_X():
     X = set()
     Y = {
         "A": [1, 4, 7],
@@ -56,13 +56,13 @@ def test_exact_cover_empty_X():
         "F": [2, 7],
     }
     with pytest.raises(KeyError):
-        exact_cover(X, Y)
+        invert_coverage(X, Y)
 
 
-def test_exact_cover_empty_Y():
+def test_invert_coverage_empty_Y():
     X = {1, 2, 3, 4, 5, 6, 7}
     Y = {}
-    result = exact_cover(X, Y)
+    result = invert_coverage(X, Y)
     assert result == {
         1: set(),
         2: set(),
