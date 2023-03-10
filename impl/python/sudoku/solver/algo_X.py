@@ -82,6 +82,13 @@ def deselect(X, Y, r, cols):
                     X[k].add(i)
 
 
+def call_select_on_initial_values(grid: np.ndarray, X, Y):
+    for row_index, row in enumerate(grid):
+        for col_index, cur_value in enumerate(row):
+            if cur_value != 0:
+                select(X, Y, (row_index, col_index, cur_value))
+
+
 def solve(grid: np.ndarray) -> np.ndarray:
     N, _N = grid.shape
     assert N == _N
@@ -92,10 +99,7 @@ def solve(grid: np.ndarray) -> np.ndarray:
 
     X = invert_coverage(X, Y)
 
-    for row_index, row in enumerate(grid):
-        for col_index, cur_value in enumerate(row):
-            if cur_value != 0:
-                select(X, Y, (row_index, col_index, cur_value))
+    call_select_on_initial_values(grid, X, Y)
 
     for solution in solve_with_constraints(X, Y, []):
         for (r, c, n) in solution:
