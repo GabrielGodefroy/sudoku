@@ -1,4 +1,4 @@
-from sudoku.solver.algo_X import exact_cover, get_X, get_Y, get_box_number
+from sudoku.solver.algo_X import exact_cover, get_X, get_Y
 import pytest
 
 
@@ -145,39 +145,6 @@ def test_get_X_2():
         ("bn", (3, 3)),
         ("bn", (3, 4)),
     ]
-
-
-def test_get_box_number_4():
-    #   0 1 2 3
-    # 0 0 0 1 1
-    # 1 0 0 1 1
-    # 2 2 2 3 3
-    # 3 2 2 3 3
-    assert get_box_number(0, 0, 2) == 0
-    assert get_box_number(0, 1, 2) == 0
-    assert get_box_number(0, 2, 2) == 1
-    assert get_box_number(0, 3, 2) == 1
-    assert get_box_number(1, 0, 2) == 0
-    assert get_box_number(1, 1, 2) == 0
-    assert get_box_number(1, 2, 2) == 1
-    assert get_box_number(1, 3, 2) == 1
-    assert get_box_number(2, 0, 2) == 2
-    assert get_box_number(2, 1, 2) == 2
-    assert get_box_number(2, 2, 2) == 3
-    assert get_box_number(2, 3, 2) == 3
-    assert get_box_number(3, 0, 2) == 2
-    assert get_box_number(3, 1, 2) == 2
-    assert get_box_number(3, 2, 2) == 3
-    assert get_box_number(3, 3, 2) == 3
-
-
-def test_get_box_number_4_exception():
-    with pytest.raises(AssertionError, match="Row index should be between 0 and 4"):
-        get_box_number(-1, 0, 2)
-    with pytest.raises(AssertionError, match="Row index should be between 0 and 4"):
-        get_box_number(4, 0, 2)
-    with pytest.raises(AssertionError, match="Dimension should be positive"):
-        get_box_number(0, 0, -1)
 
 
 def test_get_size_XY():

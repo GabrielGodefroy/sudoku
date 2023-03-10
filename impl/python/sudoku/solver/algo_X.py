@@ -1,4 +1,5 @@
 from itertools import product
+from sudoku.grid import get_box_number
 
 """
 Algorithm X modified from https://www.cs.mcgill.ca/~aassaf9/python/algorithm_x.html
@@ -21,14 +22,6 @@ def get_X(dim: int):
         # region constraint
         + [("bn", bn) for bn in product(range(N), range(1, N + 1))]
     )
-
-
-def get_box_number(row: int, column: int, dim: int) -> int:
-    N = dim * dim
-    assert dim > 0, "Dimension should be positive"
-    assert row >= 0 and row < N, f"Row index should be between 0 and {N}"
-    assert column >= 0 and column < N, f"Column index should be between 0 and {N}"
-    return (row // dim) * dim + (column // dim)
 
 
 def get_Y(dim: int) -> dict:
