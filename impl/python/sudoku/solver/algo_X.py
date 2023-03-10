@@ -3,7 +3,8 @@ from sudoku.grid import get_box_number
 
 """
 Algorithm X modified from https://www.cs.mcgill.ca/~aassaf9/python/algorithm_x.html
-https://github.com/ShivanKaul/Sudoku-DLX
+
+Also inspired from https://github.com/ShivanKaul/Sudoku-DLX
 """
 
 
