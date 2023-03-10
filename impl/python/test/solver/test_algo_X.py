@@ -173,7 +173,6 @@ def test_get_X_2():
 
 
 def test_get_Y_2():
-    print(get_Y(2))
     assert get_Y(2) == {
         # list of constraints for the upper left elements (coord 0,0) for with value 1
         (0, 0, 1): [("rc", (0, 0)), ("rn", (0, 1)), ("cn", (0, 1)), ("bn", (0, 1))],
@@ -278,3 +277,23 @@ def test_solve_X_on_impossible_9x9_grid():
     clues[0, 1] = 1
     with pytest.raises(KeyError):  # TODO wrap with other exception
         solve(clues)
+
+
+@pytest.mark.slow
+def test_solve_on_easy_grid():
+    clues = np.array(
+        [
+            [5, 3, 0, 0, 7, 0, 0, 0, 0],
+            [6, 0, 0, 1, 9, 5, 0, 0, 0],
+            [0, 9, 8, 0, 0, 0, 0, 6, 0],
+            [8, 0, 0, 0, 6, 0, 0, 0, 3],
+            [4, 0, 0, 8, 0, 3, 0, 0, 1],
+            [7, 0, 0, 0, 2, 0, 0, 0, 6],
+            [0, 6, 0, 0, 0, 0, 2, 8, 0],
+            [0, 0, 0, 4, 1, 9, 0, 0, 5],
+            [0, 0, 0, 0, 8, 0, 0, 0, 0],
+        ]
+    )
+    solution = solve(clues)
+    assert check_solution(solution)
+    assert grid_match_clues(solution, clues)

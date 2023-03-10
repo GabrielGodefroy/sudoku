@@ -9,6 +9,18 @@ Also inspired from https://github.com/ShivanKaul/Sudoku-DLX
 """
 
 
+class CellIndex:
+    def __init__(self, row_ind: int, col_ind: int):
+        self.row_ind = row_ind
+        self.col_ind = col_ind
+
+
+class ValuedCell:
+    def __init__(self, row_ind: int, col_ind: int, value: int):
+        self.index = CellIndex(row_ind, col_ind)
+        self.value = value
+
+
 def get_X(dim: int):
     N = dim * dim
     """Represent the columns of the sparse matrix constraints"""
@@ -34,7 +46,7 @@ def get_Y(dim: int) -> dict:
         # r: row, c: column, n: number
         # for row and column, indices start at 0
         # number range from 1 to 9
-        box = get_box_number(row, col, dim)
+        box = get_box_number(row, col, dim)  # TODO use CellIndex
         Y[(row, col, num)] = [
             ("rc", (row, col)),
             ("rn", (row, num)),
@@ -62,9 +74,12 @@ def invert_coverage(X: set, Y: dict) -> dict:
     return X
 
 
-def select(X, Y, r):
+def select(X, Y, cell_characteristics: tuple):
+    """
+    cell_characteristics: contains the row_index, the cell_index and the cell_value
+    """
     cols = []
-    for j in Y[r]:
+    for j in Y[cell_characteristics]:
         for i in X[j]:
             for k in Y[i]:
                 if k != j:
@@ -73,8 +88,8 @@ def select(X, Y, r):
     return cols
 
 
-def deselect(X, Y, r, cols):
-    for j in reversed(Y[r]):
+def deselect(X, Y, cell_characteristics: tuple, cols):
+    for j in reversed(Y[cell_characteristics]):
         X[j] = cols.pop()
         for i in X[j]:
             for k in Y[i]:
@@ -83,10 +98,17 @@ def deselect(X, Y, r, cols):
 
 
 def call_select_on_initial_values(grid: np.ndarray, X, Y):
-    for row_index, row in enumerate(grid):
-        for col_index, cur_value in enumerate(row):
-            if cur_value != 0:
-                select(X, Y, (row_index, col_index, cur_value))
+    """Call the select method for each cell of grid where the value is not 0"""
+    for (row_index, col_index), cell_value in np.ndenumerate(grid):
+        if cell_value == 0:
+            continue
+        select(X, Y, (row_index, col_index, cell_value))
+
+
+def apply_solution(solutions, grid: np.ndarray) -> np.ndarray:
+    for (row, col, value) in solutions:
+        grid[row, col] = value
+    return grid
 
 
 def solve(grid: np.ndarray) -> np.ndarray:
@@ -101,10 +123,10 @@ def solve(grid: np.ndarray) -> np.ndarray:
 
     call_select_on_initial_values(grid, X, Y)
 
-    for solution in solve_with_constraints(X, Y, []):
-        for (r, c, n) in solution:
-            grid[r, c] = n
-        return grid
+    for solutions in solve_with_constraints(X, Y, []):
+        return apply_solution(
+            solutions, grid
+        )  # return to stop on first found grid (yield could also be used)
 
 
 def solve_with_constraints(X, Y, solution):
