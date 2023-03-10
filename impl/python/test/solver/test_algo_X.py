@@ -1,5 +1,7 @@
-from sudoku.solver.algo_X import invert_coverage, get_X, get_Y
+from sudoku.solver.algo_X import invert_coverage, get_X, get_Y, solve
 import pytest
+import numpy as np
+from sudoku.validity import check_solution, grid_match_clues
 
 
 def test_invert_coverage_full():
@@ -74,8 +76,27 @@ def test_invert_coverage_empty_Y():
     }
 
 
+def test_get_size_XY():
+    # https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/sudoku.paper.html#Sudoku
+    # https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/presentationboard.pdf (slide 13 for size 9)
+    assert len(get_X(1)) == 1 * 2 * 2
+    assert len(get_Y(1)) == 1**3
+    assert len(get_X(2)) == 4 * 4 * 4
+    assert len(get_Y(2)) == 4**3
+    # X are columns
+    assert len(get_X(3)) == 4 * 9 * 9 == 324
+    # Y are rows
+    assert len(get_Y(3)) == 9**3 == 729
+
+
 def test_get_X_1():
     assert get_X(1) == [("rc", (0, 0)), ("rn", (0, 1)), ("cn", (0, 1)), ("bn", (0, 1))]
+
+
+def test_get_Y_1():
+    assert get_Y(1) == {
+        (0, 0, 1): [("rc", (0, 0)), ("rn", (0, 1)), ("cn", (0, 1)), ("bn", (0, 1))]
+    }
 
 
 def test_get_X_2():
@@ -151,25 +172,6 @@ def test_get_X_2():
     ]
 
 
-def test_get_size_XY():
-    # https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/sudoku.paper.html#Sudoku
-    # https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/presentationboard.pdf (slide 13 for size 9)
-    assert len(get_X(1)) == 1 * 2 * 2
-    assert len(get_Y(1)) == 1**3
-    assert len(get_X(2)) == 4 * 4 * 4
-    assert len(get_Y(2)) == 4**3
-    # X are columns
-    assert len(get_X(3)) == 4 * 9 * 9 == 324
-    # Y are rows
-    assert len(get_Y(3)) == 9**3 == 729
-
-
-def test_get_Y_1():
-    assert get_Y(1) == {
-        (0, 0, 1): [("rc", (0, 0)), ("rn", (0, 1)), ("cn", (0, 1)), ("bn", (0, 1))]
-    }
-
-
 def test_get_Y_2():
     print(get_Y(2))
     assert get_Y(2) == {
@@ -241,3 +243,38 @@ def test_get_Y_2():
         (3, 3, 3): [("rc", (3, 3)), ("rn", (3, 3)), ("cn", (3, 3)), ("bn", (3, 3))],
         (3, 3, 4): [("rc", (3, 3)), ("rn", (3, 4)), ("cn", (3, 4)), ("bn", (3, 4))],
     }
+
+
+def test_solve_X_on_empty_9x9_grid():
+    clues = np.ndarray(shape=(9, 9), dtype=int)
+    clues.fill(0)
+    solution = solve(clues)
+    assert check_solution(solution)
+    assert grid_match_clues(solution, clues)
+
+
+def test_solve_X_on_empty_4x4_grid():
+    clues = np.ndarray(shape=(4, 4), dtype=int)
+    clues.fill(0)
+    solution = solve(clues)
+    assert solution is not None
+    # TODO assert check_solution(solution)
+    # TODO assert grid_match_clues(solution, clues)
+
+
+def test_solve_X_on_impossible_4x4_grid():
+    clues = np.ndarray(shape=(4, 4), dtype=int)
+    clues.fill(0)
+    clues[0, 0] = 1
+    clues[0, 1] = 1
+    with pytest.raises(KeyError):  # TODO wrap with other exception
+        solve(clues)
+
+
+def test_solve_X_on_impossible_9x9_grid():
+    clues = np.ndarray(shape=(9, 9), dtype=int)
+    clues.fill(0)
+    clues[0, 0] = 1
+    clues[0, 1] = 1
+    with pytest.raises(KeyError):  # TODO wrap with other exception
+        solve(clues)

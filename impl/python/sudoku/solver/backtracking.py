@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 
 
-def solve(grid: np.ndarray):
+def solve(grid: np.ndarray) -> np.ndarray:
     """
     TODO inspired from https://www.youtube.com/watch?v=G_UYXzGuqvM
     """

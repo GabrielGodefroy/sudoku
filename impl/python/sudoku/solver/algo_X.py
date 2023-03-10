@@ -1,5 +1,6 @@
 from itertools import product
 from sudoku.grid import get_box_number
+import numpy as np
 
 """
 Algorithm X modified from https://www.cs.mcgill.ca/~aassaf9/python/algorithm_x.html
@@ -59,3 +60,58 @@ def invert_coverage(X: set, Y: dict) -> dict:
         for j in row:
             X[j].add(i)
     return X
+
+
+def select(X, Y, r):
+    cols = []
+    for j in Y[r]:
+        for i in X[j]:
+            for k in Y[i]:
+                if k != j:
+                    X[k].remove(i)
+        cols.append(X.pop(j))
+    return cols
+
+
+def deselect(X, Y, r, cols):
+    for j in reversed(Y[r]):
+        X[j] = cols.pop()
+        for i in X[j]:
+            for k in Y[i]:
+                if k != j:
+                    X[k].add(i)
+
+
+def solve(grid: np.ndarray) -> np.ndarray:
+    N, _N = grid.shape
+    assert N == _N
+    R = int(N**0.5)
+
+    X = get_X(R)
+    Y = get_Y(R)
+
+    X = invert_coverage(X, Y)
+
+    for row_index, row in enumerate(grid):
+        for col_index, cur_value in enumerate(row):
+            if cur_value != 0:
+                select(X, Y, (row_index, col_index, cur_value))
+
+    for solution in solve_with_constraints(X, Y, []):
+        for (r, c, n) in solution:
+            grid[r, c] = n
+        return grid
+
+
+def solve_with_constraints(X, Y, solution):
+    if not X:
+        yield list(solution)
+    else:
+        c = min(X, key=lambda c: len(X[c]))
+        for r in list(X[c]):
+            solution.append(r)
+            cols = select(X, Y, r)
+            for s in solve_with_constraints(X, Y, solution):
+                yield s
+            deselect(X, Y, r, cols)
+            solution.pop()
