@@ -1,5 +1,10 @@
 from itertools import product
 from sudoku.grid import get_box_number
+from sudoku.solver.algo_X_impl.algo_X_impl import (
+    select,
+    invert_coverage,
+    recursive_exact_coverage,
+)
 import numpy as np
 
 """
@@ -56,56 +61,6 @@ def build_map_of_constraint_per_cell(dim: int) -> dict:
     return Y
 
 
-def exact_coverage(X: set, Y: dict) -> list:
-    X = invert_coverage(X, Y)
-
-    for solutions in solve_with_constraints(X, Y, []):
-        return solutions
-
-
-def invert_coverage(X: set, Y: dict) -> dict:
-    """
-    Given a set X, and a dictionary Y key -> list[value] where each value belongs to X:
-
-    Return a dictionnary mapping each element of X to the key link by Y
-
-    >>> result = invert_coverage( X = {1, 2, 3, 4, 5} , Y = { "A": [1, 3, 5], "B": [1, 4] })
-    {1: {'B', 'A'}, 2: set(), 3: {'A'}, 4: {'B'}, 5: {'A'}}
-
-    https://en.wikipedia.org/wiki/Exact_cover
-    """
-    X = {j: set() for j in X}
-    for i, row in Y.items():
-        for j in row:
-            X[j].add(i)
-    return X
-
-
-def select(
-    candidate_per_constraint, constraint_map_per_cell, cell_characteristics: tuple
-):
-    """
-    cell_characteristics: contains the row_index, the cell_index and the cell_value
-    """
-    cols = []
-    for j in constraint_map_per_cell[cell_characteristics]:
-        for i in candidate_per_constraint[j]:
-            for k in constraint_map_per_cell[i]:
-                if k != j:
-                    candidate_per_constraint[k].remove(i)
-        cols.append(candidate_per_constraint.pop(j))
-    return cols
-
-
-def deselect(X, Y, cell_characteristics: tuple, cols):
-    for j in reversed(Y[cell_characteristics]):
-        X[j] = cols.pop()
-        for i in X[j]:
-            for k in Y[i]:
-                if k != j:
-                    X[k].add(i)
-
-
 def call_select_on_initial_values(
     grid: np.ndarray, candidate_per_constraint, constraint_map_per_cell
 ):
@@ -142,27 +97,9 @@ def solve(grid: np.ndarray) -> np.ndarray:
         grid, candidate_per_constraint, constraint_map_per_cell
     )
 
-    for solutions in solve_with_constraints(
+    for solutions in recursive_exact_coverage(
         candidate_per_constraint, constraint_map_per_cell, []
     ):
         return apply_solution(
             solutions, grid
         )  # return to stop on first found grid (yield could also be used)
-
-
-def solve_with_constraints(candidate_per_constraint, constraint_map_per_cell, solution):
-    if not candidate_per_constraint:
-        yield list(solution)
-    else:
-        c = min(
-            candidate_per_constraint, key=lambda c: len(candidate_per_constraint[c])
-        )
-        for candidate in list(candidate_per_constraint[c]):
-            solution.append(candidate)
-            cols = select(candidate_per_constraint, constraint_map_per_cell, candidate)
-            for s in solve_with_constraints(
-                candidate_per_constraint, constraint_map_per_cell, solution
-            ):
-                yield s
-            deselect(candidate_per_constraint, constraint_map_per_cell, candidate, cols)
-            solution.pop()
