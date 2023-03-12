@@ -3,10 +3,25 @@ from sudoku.solver.algo_X import (
     build_list_of_constraints,
     build_map_of_constraint_per_cell,
     solve,
+    exact_coverage,
 )
 import pytest
 import numpy as np
 from sudoku.validity import check_solution, grid_match_clues
+
+
+def test_exact_coverage():
+    X = {1, 2, 3, 4, 5, 6, 7}
+    Y = {
+        "A": [1, 4, 7],
+        "B": [1, 4],
+        "C": [4, 5, 7],
+        "D": [3, 5, 6],
+        "E": [2, 3, 6, 7],
+        "F": [2, 7],
+    }
+    solution = exact_coverage(X, Y)
+    assert solution == ["B", "D", "F"]
 
 
 def test_invert_coverage_full():

@@ -56,6 +56,13 @@ def build_map_of_constraint_per_cell(dim: int) -> dict:
     return Y
 
 
+def exact_coverage(X: set, Y: dict) -> list:
+    X = invert_coverage(X, Y)
+
+    for solutions in solve_with_constraints(X, Y, []):
+        return solutions
+
+
 def invert_coverage(X: set, Y: dict) -> dict:
     """
     Given a set X, and a dictionary Y key -> list[value] where each value belongs to X:
