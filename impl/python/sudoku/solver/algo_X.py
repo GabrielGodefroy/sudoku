@@ -21,7 +21,7 @@ class ValuedCell:
         self.value = value
 
 
-def get_X(dim: int):
+def build_list_of_constraints(dim: int):
     N = dim * dim
     """Represent the columns of the sparse matrix constraints"""
     return (
@@ -38,7 +38,7 @@ def get_X(dim: int):
     )
 
 
-def get_Y(dim: int) -> dict:
+def build_map_of_constraint_per_cell(dim: int) -> dict:
     """Represent the rows of the sparse matrix constraints"""
     N = dim * dim
     Y = dict()
@@ -74,17 +74,19 @@ def invert_coverage(X: set, Y: dict) -> dict:
     return X
 
 
-def select(X, Y, cell_characteristics: tuple):
+def select(
+    candidate_per_constraint, constraint_map_per_cell, cell_characteristics: tuple
+):
     """
     cell_characteristics: contains the row_index, the cell_index and the cell_value
     """
     cols = []
-    for j in Y[cell_characteristics]:
-        for i in X[j]:
-            for k in Y[i]:
+    for j in constraint_map_per_cell[cell_characteristics]:
+        for i in candidate_per_constraint[j]:
+            for k in constraint_map_per_cell[i]:
                 if k != j:
-                    X[k].remove(i)
-        cols.append(X.pop(j))
+                    candidate_per_constraint[k].remove(i)
+        cols.append(candidate_per_constraint.pop(j))
     return cols
 
 
@@ -97,12 +99,18 @@ def deselect(X, Y, cell_characteristics: tuple, cols):
                     X[k].add(i)
 
 
-def call_select_on_initial_values(grid: np.ndarray, X, Y):
+def call_select_on_initial_values(
+    grid: np.ndarray, candidate_per_constraint, constraint_map_per_cell
+):
     """Call the select method for each cell of grid where the value is not 0"""
     for (row_index, col_index), cell_value in np.ndenumerate(grid):
         if cell_value == 0:
             continue
-        select(X, Y, (row_index, col_index, cell_value))
+        select(
+            candidate_per_constraint,
+            constraint_map_per_cell,
+            (row_index, col_index, cell_value),
+        )
 
 
 def apply_solution(solutions, grid: np.ndarray) -> np.ndarray:
@@ -116,28 +124,38 @@ def solve(grid: np.ndarray) -> np.ndarray:
     assert N == _N
     R = int(N**0.5)
 
-    X = get_X(R)
-    Y = get_Y(R)
+    list_of_constraints = build_list_of_constraints(R)
+    constraint_map_per_cell = build_map_of_constraint_per_cell(R)
 
-    X = invert_coverage(X, Y)
+    candidate_per_constraint = invert_coverage(
+        list_of_constraints, constraint_map_per_cell
+    )
 
-    call_select_on_initial_values(grid, X, Y)
+    call_select_on_initial_values(
+        grid, candidate_per_constraint, constraint_map_per_cell
+    )
 
-    for solutions in solve_with_constraints(X, Y, []):
+    for solutions in solve_with_constraints(
+        candidate_per_constraint, constraint_map_per_cell, []
+    ):
         return apply_solution(
             solutions, grid
         )  # return to stop on first found grid (yield could also be used)
 
 
-def solve_with_constraints(X, Y, solution):
-    if not X:
+def solve_with_constraints(candidate_per_constraint, constraint_map_per_cell, solution):
+    if not candidate_per_constraint:
         yield list(solution)
     else:
-        c = min(X, key=lambda c: len(X[c]))
-        for r in list(X[c]):
-            solution.append(r)
-            cols = select(X, Y, r)
-            for s in solve_with_constraints(X, Y, solution):
+        c = min(
+            candidate_per_constraint, key=lambda c: len(candidate_per_constraint[c])
+        )
+        for candidate in list(candidate_per_constraint[c]):
+            solution.append(candidate)
+            cols = select(candidate_per_constraint, constraint_map_per_cell, candidate)
+            for s in solve_with_constraints(
+                candidate_per_constraint, constraint_map_per_cell, solution
+            ):
                 yield s
-            deselect(X, Y, r, cols)
+            deselect(candidate_per_constraint, constraint_map_per_cell, candidate, cols)
             solution.pop()
