@@ -14,18 +14,6 @@ Also inspired from https://github.com/ShivanKaul/Sudoku-DLX
 """
 
 
-class CellIndex:
-    def __init__(self, row_ind: int, col_ind: int):
-        self.row_ind = row_ind
-        self.col_ind = col_ind
-
-
-class ValuedCell:
-    def __init__(self, row_ind: int, col_ind: int, value: int):
-        self.index = CellIndex(row_ind, col_ind)
-        self.value = value
-
-
 def build_list_of_constraints(dim: int):
     N = dim * dim
     """Represent the columns of the sparse matrix constraints"""

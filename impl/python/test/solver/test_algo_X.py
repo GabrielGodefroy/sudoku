@@ -22,8 +22,9 @@ def test_size_of_constraint():
     assert len(build_map_of_constraint_per_cell(3)) == 9**3 == 729
 
 
-def build_list_of_constraints_size_1():
-    assert build_list_of_constraints(1) == [
+def test_build_list_of_constraints_size_1():
+    constraints = build_list_of_constraints(1)
+    assert constraints == [
         ("rc", (0, 0)),
         ("rn", (0, 1)),
         ("cn", (0, 1)),
@@ -31,13 +32,14 @@ def build_list_of_constraints_size_1():
     ]
 
 
-def build_constraint_per_cell_size_1():
-    assert build_map_of_constraint_per_cell(1) == {
+def test_build_constraint_per_cell_size_1():
+    constraints = build_map_of_constraint_per_cell(1)
+    assert constraints == {
         (0, 0, 1): [("rc", (0, 0)), ("rn", (0, 1)), ("cn", (0, 1)), ("bn", (0, 1))]
     }
 
 
-def build_list_of_constraints_size_2():
+def test_build_list_of_constraints_size_2():
     assert build_list_of_constraints(2) == [
         # Position constraints for the 16 cells
         ("rc", (0, 0)),
@@ -110,7 +112,7 @@ def build_list_of_constraints_size_2():
     ]
 
 
-def build_constraint_per_cell_size_2():
+def test_build_constraint_per_cell_size_2():
     assert build_map_of_constraint_per_cell(2) == {
         # list of constraints for the upper left elements (coord 0,0) for with value 1
         (0, 0, 1): [("rc", (0, 0)), ("rn", (0, 1)), ("cn", (0, 1)), ("bn", (0, 1))],
