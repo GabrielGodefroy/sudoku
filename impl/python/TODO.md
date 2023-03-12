@@ -1,6 +1,6 @@
 - [x] Implement one solver
 - [x] Implement one app
-- [ ] Add CI
+- [x] Add CI
   - [x] [github actions](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions)
   - [x] [page for python](https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python)
   - [x] [python with conda](https://autobencoder.com/2020-08-24-conda-actions/)
@@ -8,12 +8,17 @@
   - [x] Use black/flake8
   - [x] pytest
   - [x] add a tag to run pytest only on fast test when pre-commit
+
 - [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
 - [ ] Use vscode and devcontainer
 - [ ] Restrict python version in conda environment file
 
 - [ ] Proper doc string
-- [ ] Generate documentation page/website
+- [ ] Use doc test
+- [ ] Use github pages (https://pages.github.com/)
+- [...] Algorithm X
+
+- [ ] Generate documentation page/website (git pages)
 
 - [ ] Implement more efficient solvers (and benchmark)
 
