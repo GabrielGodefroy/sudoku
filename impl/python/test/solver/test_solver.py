@@ -1,5 +1,5 @@
 import pytest
-from sudoku.solver.solver import SolverKeyError, solve
+from sudoku.solver.solver import SolverKeyError, solve, get_impl
 
 
 def test_solver_dispatch():
@@ -12,3 +12,7 @@ def test_solver_dispatch():
 def test_solver_dispatch_on_unknown_strategy():
     with pytest.raises(SolverKeyError):
         solve(None, "unkown strategy")
+
+
+def test_get_implementation():
+    assert get_impl() == ["backtracking", "algoX"]

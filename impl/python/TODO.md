@@ -24,6 +24,6 @@
 
 - [ ] Graphical interface using pyqt
 - [ ] Implement one grid generator
-
+- [ ] Install lib to avoid `export PYTHONPATH=~$(pwd):$PYTHONPATH`
 - [ ] Test the cli from an external program
 - [ ] Use matrix in gitlab-ci to run with several python version
