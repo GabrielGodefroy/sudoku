@@ -15,6 +15,8 @@
 
 - [ ] Proper doc string
 - [ ] Use doc test
+  - [ ] https://docs.python.org/3/library/doctest.html
+  - [ ] https://stackoverflow.com/questions/67379623/doctest-multiple-files-from-one-file
 - [ ] Use github pages (https://pages.github.com/)
 - [...] Algorithm X
 

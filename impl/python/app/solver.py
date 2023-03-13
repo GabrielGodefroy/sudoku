@@ -1,6 +1,6 @@
 from sudoku.loader import load_from_text_file
 
-from sudoku.solver.solver import solve, SolverKeyError, get_impl
+from sudoku.solver.solver import solve, SolverKeyError, get_avail_solver_names
 
 import click
 
@@ -32,7 +32,9 @@ def pretty_print(sudoku: np.ndarray) -> None:
     default=None,
 )
 @click.option(
-    "--strategy", help=f"Available strategys are {', '.join(get_impl())}.", default=None
+    "--strategy",
+    help=f"Available strategys are {', '.join(get_avail_solver_names())}.",
+    default=None,
 )
 def solve_interface(filename, strategy):
     """

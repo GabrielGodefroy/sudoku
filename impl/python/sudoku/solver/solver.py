@@ -6,7 +6,7 @@ import numpy as np
 solver_implementation = {"backtracking": backtracking_solve, "algoX": algoX_solve}
 
 
-def get_impl():
+def get_avail_solver_names():
     return list(solver_implementation.keys())
 
 
