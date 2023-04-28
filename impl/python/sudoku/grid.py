@@ -1,6 +1,14 @@
 import numpy as np
 
 
+def get_box_number(row: int, column: int, dim: int) -> int:
+    N = dim * dim
+    assert dim > 0, "Dimension should be positive"
+    assert row >= 0 and row < N, f"Row index should be between 0 and {N}"
+    assert column >= 0 and column < N, f"Column index should be between 0 and {N}"
+    return (row // dim) * dim + (column // dim)
+
+
 def get_neighboorhood_values(x: int, y: int, sudoku: np.ndarray) -> list[int]:
     return [
         sudoku[_x][_y]

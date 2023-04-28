@@ -5,6 +5,7 @@ from sudoku.grid import (
     get_neighboorhood_indices,
     get_neighboorhood_values,
     get_candidate_values,
+    get_box_number,
 )
 
 
@@ -131,3 +132,36 @@ def test_get_candidate_values_on_non_empty_grid():
     assert sorted(get_candidate_values(1, 1, array)) == [1, 3, 4, 5, 6, 7, 8, 9]
     assert sorted(get_candidate_values(1, 8, array)) == [2, 3, 4, 5, 6, 7, 9]
     assert sorted(get_candidate_values(8, 1, array)) == [2, 3, 4, 5, 6, 8, 9]
+
+
+def test_get_box_number_4():
+    #   0 1 2 3
+    # 0 0 0 1 1
+    # 1 0 0 1 1
+    # 2 2 2 3 3
+    # 3 2 2 3 3
+    assert get_box_number(0, 0, 2) == 0
+    assert get_box_number(0, 1, 2) == 0
+    assert get_box_number(0, 2, 2) == 1
+    assert get_box_number(0, 3, 2) == 1
+    assert get_box_number(1, 0, 2) == 0
+    assert get_box_number(1, 1, 2) == 0
+    assert get_box_number(1, 2, 2) == 1
+    assert get_box_number(1, 3, 2) == 1
+    assert get_box_number(2, 0, 2) == 2
+    assert get_box_number(2, 1, 2) == 2
+    assert get_box_number(2, 2, 2) == 3
+    assert get_box_number(2, 3, 2) == 3
+    assert get_box_number(3, 0, 2) == 2
+    assert get_box_number(3, 1, 2) == 2
+    assert get_box_number(3, 2, 2) == 3
+    assert get_box_number(3, 3, 2) == 3
+
+
+def test_get_box_number_4_exception():
+    with pytest.raises(AssertionError, match="Row index should be between 0 and 4"):
+        get_box_number(-1, 0, 2)
+    with pytest.raises(AssertionError, match="Row index should be between 0 and 4"):
+        get_box_number(4, 0, 2)
+    with pytest.raises(AssertionError, match="Dimension should be positive"):
+        get_box_number(0, 0, -1)
