@@ -8,8 +8,9 @@
   - [x] Use black/flake8
   - [x] pytest
   - [x] add a tag to run pytest only on fast test when pre-commit
+- [ ] Implement grid generator
+- [ ] Use vscode and [devcontainer](https://www.youtube.com/watch?v=FvUpjdWnibo)
 - [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
-- [ ] Use vscode and devcontainer
 - [ ] Restrict python version in conda environment file
 
 - [ ] Proper doc string
@@ -18,7 +19,6 @@
 - [ ] Implement more efficient solvers (and benchmark)
 
 - [ ] Graphical interface using pyqt
-- [ ] Implement one grid generator
 
 - [ ] Test the cli from an external program
 - [ ] Use matrix in gitlab-ci to run with several python version
