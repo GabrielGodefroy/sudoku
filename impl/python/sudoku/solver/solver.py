@@ -1,11 +1,13 @@
 from sudoku.solver.backtracking import solve as backtracking_solve
+from sudoku.solver.algo_X import solve as algoX_solve
 
 import numpy as np
 
-solver_implementation = {
-    "backtracking": backtracking_solve,
-    # TODO
-}
+solver_implementation = {"backtracking": backtracking_solve, "algoX": algoX_solve}
+
+
+def get_avail_solver_names():
+    return list(solver_implementation.keys())
 
 
 class SolverKeyError(Exception):
@@ -15,7 +17,7 @@ class SolverKeyError(Exception):
         super().__init__(f"Unknown solver implementation: {asked_name}")
 
 
-def solve(grid: np.ndarray, solver_name: str = "backtracking"):
+def solve(grid: np.ndarray, solver_name: str = "algoX"):
 
     try:
         impl = solver_implementation[solver_name]

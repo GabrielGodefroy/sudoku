@@ -1,6 +1,6 @@
 from sudoku.loader import load_from_text_file
 
-from sudoku.solver.solver import solve, SolverKeyError
+from sudoku.solver.solver import solve, SolverKeyError, get_avail_solver_names
 
 import click
 
@@ -31,7 +31,11 @@ def pretty_print(sudoku: np.ndarray) -> None:
     help="Text file containing the sudoku puzzle to solve",
     default=None,
 )
-@click.option("--strategy", help="Available strategys are TODO", default=None)
+@click.option(
+    "--strategy",
+    help=f"Available strategys are {', '.join(get_avail_solver_names())}.",
+    default=None,
+)
 def solve_interface(filename, strategy):
     """
     Command line interface for solving sudoku.
@@ -47,7 +51,7 @@ def solve_interface(filename, strategy):
         sys.exit(ExitStatus.INVALID_INPUT)
 
     if strategy is None:
-        strategy = "backtracking"
+        strategy = "algoX"
 
     try:
         sudoku = load_from_text_file(filename)
