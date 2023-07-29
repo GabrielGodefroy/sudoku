@@ -1,4 +1,4 @@
-from sudoku.validity import check_solution
+from sudoku.validity import check_solution, grid_match_clues
 from sudoku.generator import FullGridGenerator, PartialGridGenerator
 
 from sudoku.solver.backtracking import solve
@@ -47,22 +47,20 @@ def test_full_grid_generator_generate_from_seed():
 
     generator = FullGridGenerator(3)
     res = generator.generate(101)
-    assert (
-        res
-        == np.array(
-            [
-                [3, 9, 7, 8, 6, 5, 1, 4, 2],
-                [5, 6, 8, 1, 4, 2, 7, 9, 3],
-                [2, 4, 1, 7, 9, 3, 8, 6, 5],
-                [7, 2, 9, 6, 3, 8, 4, 5, 1],
-                [1, 5, 4, 9, 2, 7, 6, 3, 8],
-                [8, 3, 6, 4, 5, 1, 9, 2, 7],
-                [6, 7, 3, 5, 8, 4, 2, 1, 9],
-                [4, 8, 5, 2, 1, 9, 3, 7, 6],
-                [9, 1, 2, 3, 7, 6, 5, 8, 4],
-            ]
-        )
-    ).all()
+    expected = np.array(
+        [
+            [3, 9, 7, 8, 6, 5, 1, 4, 2],
+            [5, 6, 8, 1, 4, 2, 7, 9, 3],
+            [2, 4, 1, 7, 9, 3, 8, 6, 5],
+            [7, 2, 9, 6, 3, 8, 4, 5, 1],
+            [1, 5, 4, 9, 2, 7, 6, 3, 8],
+            [8, 3, 6, 4, 5, 1, 9, 2, 7],
+            [6, 7, 3, 5, 8, 4, 2, 1, 9],
+            [4, 8, 5, 2, 1, 9, 3, 7, 6],
+            [9, 1, 2, 3, 7, 6, 5, 8, 4],
+        ]
+    )
+    assert (res == expected).all()
     assert check_solution(res)
 
 
@@ -77,12 +75,14 @@ def test_full_grid_generator_generate_several_solution():
 def test_partial_grid_generator():
 
     full_grid_generator = FullGridGenerator(3)
+    seed = 0  # seed used for the full grid generator
 
     partial_grid_generator = PartialGridGenerator(full_grid_generator, None)
-    grid = partial_grid_generator.generate()
+
+    grid = partial_grid_generator.generate(seed)
 
     print(f"{grid=}")
 
     solution = solve(grid)
     assert check_solution(solution)
-    # assert grid_match_clues(solution, clues)
+    assert grid_match_clues(solution, full_grid_generator.generate(seed))
