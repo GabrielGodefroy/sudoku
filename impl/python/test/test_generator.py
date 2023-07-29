@@ -1,5 +1,6 @@
 from sudoku.validity import check_solution, grid_match_clues
 from sudoku.generator import FullGridGenerator, PartialGridGenerator
+from sudoku.multisolver.multisolver import shortSudokuSolve
 
 from sudoku.solver.backtracking import solve
 
@@ -76,8 +77,9 @@ def test_partial_grid_generator():
 
     full_grid_generator = FullGridGenerator(3)
     seed = 0  # seed used for the full grid generator
+    multisolver = shortSudokuSolve
 
-    partial_grid_generator = PartialGridGenerator(full_grid_generator, None)
+    partial_grid_generator = PartialGridGenerator(full_grid_generator, multisolver)
 
     grid = partial_grid_generator.generate(seed)
 

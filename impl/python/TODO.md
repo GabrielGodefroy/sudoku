@@ -8,6 +8,7 @@
   - [x] Use black/flake8
   - [x] pytest
   - [x] add a tag to run pytest only on fast test when pre-commit
+- [ ] Implement multi solver to yield several (all) solutions
 - [ ] Implement grid generator
 - [ ] Use vscode and [devcontainer](https://www.youtube.com/watch?v=FvUpjdWnibo)
 
