@@ -7,10 +7,10 @@ import numpy as np
 """
 
 
-def shortSudokuSolve(board: np.ndarray) -> [np.ndarray]:
-    """Refactor into a class"""
+def multisolve(board: np.ndarray) -> [np.ndarray]:
     size = len(board)
     block = int(size**0.5)
+
     board = [n for row in board for n in row]
 
     def getList(p, size, block):

@@ -61,6 +61,8 @@ class PartialGridGenerator:
             np.random.choice(np.arange(board.size), int(50 / 100 * 81), replace=False)
         ] = 0
 
+        assert type(board) == np.ndarray
+
         while True:
             solved = [
                 *islice(self._solver(board.tolist()), 2)

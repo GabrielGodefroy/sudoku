@@ -1,6 +1,6 @@
 from sudoku.validity import check_solution, grid_match_clues
 from sudoku.generator import FullGridGenerator, PartialGridGenerator
-from sudoku.multisolver.multisolver import shortSudokuSolve
+from sudoku.multisolver.multisolver import multisolve
 
 from sudoku.solver.backtracking import solve
 
@@ -94,7 +94,7 @@ def test_partial_grid_generator():
     size = 3
     seed = 101  # seed used for the full grid generator
     full_grid_generator = FullGridGenerator(size)
-    multisolver = shortSudokuSolve
+    multisolver = multisolve
 
     # when
     partial_grid_generator = PartialGridGenerator(full_grid_generator, multisolver)
@@ -113,7 +113,7 @@ def test_partial_grid_generator_several():
         # given
         size = 3
         full_grid_generator = FullGridGenerator(size)
-        multisolver = shortSudokuSolve
+        multisolver = multisolve
 
         # when
         partial_grid_generator = PartialGridGenerator(full_grid_generator, multisolver)
@@ -140,7 +140,7 @@ def test_partial_grid_generator_check_reproducibility():
         seed = 101
         size = 3
         full_grid_generator = FullGridGenerator(size)
-        multisolver = shortSudokuSolve
+        multisolver = multisolve
 
         # when
         partial_grid_generator = PartialGridGenerator(full_grid_generator, multisolver)
