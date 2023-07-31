@@ -52,14 +52,13 @@ class PartialGridGenerator:
     def generate(self, seed: int = None):
         if seed is not None:
             random.seed(seed)
+            np.random.seed(seed)
 
         solution = self._full_grid_generator.generate(seed)
 
-        print(f"{solution=}")
-
         board = solution.copy()
         board.flat[
-            np.random.choice(np.arange(board.size), int(20 / 100 * 81), replace=False)
+            np.random.choice(np.arange(board.size), int(50 / 100 * 81), replace=False)
         ] = 0
 
         while True:
