@@ -64,9 +64,7 @@ class PartialGridGenerator:
         assert type(board) == np.ndarray
 
         while True:
-            solved = [
-                *islice(self._solver(board.tolist()), 2)
-            ]  # todo, remove need for tolist
+            solved = [*islice(self._solver(board), 2)]  # todo, remove need for tolist
             if len(solved) == 1:
                 break
             diffPos = [

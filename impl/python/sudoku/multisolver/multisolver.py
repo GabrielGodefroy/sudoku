@@ -7,7 +7,8 @@ import numpy as np
 """
 
 
-def multisolve(board: np.ndarray) -> [np.ndarray]:
+def multisolve(board: np.ndarray) -> np.ndarray:
+    board = board.tolist()
     size = len(board)
     block = int(size**0.5)
 
@@ -38,5 +39,6 @@ def multisolve(board: np.ndarray) -> [np.ndarray]:
         empty += 1 if board[pos] else -1
         if empty == len(empties):
             solution = [board[r : r + size] for r in range(0, size * size, size)]
-            yield solution
+            ndsolution = np.array(solution)
+            yield ndsolution
             empty -= 1
