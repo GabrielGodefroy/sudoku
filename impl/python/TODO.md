@@ -8,13 +8,11 @@
   - [x] Use black/flake8
   - [x] pytest
   - [x] add a tag to run pytest only on fast test when pre-commit
-- [ ] Implement grid generator
+- [...] Implement grid generator
 - [ ] Properly implement multi solver to yield several (all) solutions
 - [ ] Use vscode and [devcontainer](https://www.youtube.com/watch?v=FvUpjdWnibo)
-
 - [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
 - [ ] Restrict python version in conda environment file
-
 - [ ] Proper doc string
 - [ ] Use doc test
   - [ ] https://docs.python.org/3/library/doctest.html
@@ -23,8 +21,6 @@
 - [...] Algorithm X
 
 - [ ] Generate documentation page/website (git pages)
-- [ ] Use hypothesis for unit testing
-- [ ] Mocking for unit testing (check number of call, spy returned results, ...)
 
 - [ ] Implement more efficient solvers (and benchmark)
 
