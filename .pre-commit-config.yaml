@@ -13,10 +13,10 @@ repos:
     rev: 6.0.0
     hooks:
     -   id: flake8
-        args: ['--count', '--select=E9,F63,F7,F82']
+        args: ['--count', '--select=E9,F63,F7,F82', '--ignore=E203']
         files: impl/python
     -   id: flake8
-        args: ['--max-complexity=10', '--max-line-length=120', '--count']
+        args: ['--max-complexity=10', '--max-line-length=120', '--count', '--ignore=E203']
         files: impl/python
 -   repo: local
     hooks:
