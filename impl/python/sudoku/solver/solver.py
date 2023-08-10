@@ -17,7 +17,7 @@ class SolverKeyError(Exception):
         super().__init__(f"Unknown solver implementation: {asked_name}")
 
 
-def solve(grid: np.ndarray, solver_name: str = "algoX"):
+def solve(grid: np.ndarray, solver_name: str = "algoX") -> np.ndarray:
 
     try:
         impl = solver_implementation[solver_name]
