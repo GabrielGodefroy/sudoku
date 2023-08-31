@@ -1,24 +1,65 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/anaconda
 {
-	"name": "Anaconda (Python 3)",
-	"build": { 
-		"context": "..",
-		"dockerfile": "Dockerfile"
-	}
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "python --version",
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+  "name": "Python 3 (Anaconda) dev-container for Sudoku project",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "better-comments.highlightPlainText": true,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": true
+        },
+        "python.defaultInterpreterPath": "/conda/dev/bin/python",
+        "python.languageServer": "Pylance",
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.linting.flake8Path": "/opt/conda/bin/flake8",
+        "python.linting.pylintEnabled": true,
+        "python.linting.pylintPath": "/opt/conda/bin/pylint",
+        "python.linting.pydocstyleEnabled": false,
+        "python.linting.pydocstylePath": "/opt/conda/bin/pydocstyle",
+        "python.formatting.provider": "black",
+        "python.formatting.blackPath": "/opt/conda/bin/black",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestPath": "/opt/conda/bin/pytest",
+        "pythonTestExplorer.testFramework": "pytest",
+        "python.analysis.typeCheckingMode": "strict",
+        "taskExplorer.enableSideBar": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.inheritEnv": true,
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "args": [
+              "-l"
+            ]
+          },
+          "zsh": {
+            "path": "/bin/zsh",
+            "args": [
+              "-l"
+            ]
+          }
+        },
+        "files.associations": {
+          "docker-compose.yml": "yaml"
+        }
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "ms-python.python",
+        "editorconfig.editorconfig",
+        "ms-vscode.test-adapter-converter",
+        "littlefoxteam.vscode-python-test-adapter",
+        "bungcip.better-toml",
+        "njpwerner.autodocstring"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
 }
