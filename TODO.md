@@ -10,7 +10,7 @@
 # Style
 
  - [ ] Object-oriented
- - [ ] Functional programming 
+ - [ ] Functional programming
  - [ ] Structured programming
  - [ ] Service oriented
  - [ ] Web

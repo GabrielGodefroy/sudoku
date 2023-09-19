@@ -5,7 +5,6 @@ from sudoku.multisolver.multisolver import multisolve
 
 from sudoku.solver.backtracking import solve
 
-import numpy as np
 
 def test_partial_grid_generator():
     # given
