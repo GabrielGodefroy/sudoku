@@ -31,7 +31,7 @@ def build_list_of_constraints(dim: int):
     return position_cnstr + row_cnstr + col_cnstr + reg_cnstr
 
 
-def build_map_of_constraint_per_cell(dim: int) -> dict:
+def build_map_of_constraint_per_cell(dim: int) -> dict[str, tuple[int]]:
     """Represent the rows of the sparse matrix constraints"""
     N = dim * dim
     Y = dict()
