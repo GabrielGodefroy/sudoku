@@ -17,21 +17,21 @@ Also inspired from https://github.com/ShivanKaul/Sudoku-DLX
 def build_list_of_constraints(dim: int):
     N = dim * dim
     """Represent the columns of the sparse matrix constraints"""
-    return (
-        # position constraint: only 1 number can occupy a cell
-        # cell index range from (0,0) to (N-1,N-1)
-        [("rc", rc) for rc in product(range(N), range(N))]
-        # row constraint: row indices ranges from 0 to N-1,
-        #                 number ranges from 0 to N
-        + [("rn", rn) for rn in product(range(N), range(1, N + 1))]
-        # column constraint
-        + [("cn", cn) for cn in product(range(N), range(1, N + 1))]
-        # region constraint
-        + [("bn", bn) for bn in product(range(N), range(1, N + 1))]
-    )
+    # position constraint: only 1 number can occupy a cell
+    # cell index range from (0,0) to (N-1,N-1)
+    position_cnstr = [("rc", rc) for rc in product(range(N), range(N))]
+
+    # row constraint: row indices ranges from 0 to N-1,
+    #                 number ranges from 0 to N
+    row_cnstr = [("rn", rn) for rn in product(range(N), range(1, N + 1))]
+    # column constraint
+    col_cnstr = [("cn", cn) for cn in product(range(N), range(1, N + 1))]
+    # constraint on region
+    reg_cnstr = [("bn", bn) for bn in product(range(N), range(1, N + 1))]
+    return position_cnstr + row_cnstr + col_cnstr + reg_cnstr
 
 
-def build_map_of_constraint_per_cell(dim: int) -> dict:
+def build_map_of_constraint_per_cell(dim: int) -> dict[str, tuple[int]]:
     """Represent the rows of the sparse matrix constraints"""
     N = dim * dim
     Y = dict()

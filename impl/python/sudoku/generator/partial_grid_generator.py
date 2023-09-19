@@ -1,7 +1,7 @@
 import numpy as np
-from random import sample
 import random
 from itertools import islice
+
 
 class PartialGridGenerator:
     """
@@ -10,16 +10,16 @@ class PartialGridGenerator:
     (Modified from https://stackoverflow.com/questions/45471152/how-to-create-a-sudoku-puzzle-in-python)
     """
 
-    def __init__(self, full_grid_generator, solver, nb_clues = 40):
+    def __init__(self, full_grid_generator, solver, nb_clues=40):
         self._full_grid_generator = full_grid_generator
         self._solver = solver
         self._nb_clues = nb_clues
 
-        assert (self._nb_clues > 0) and (self._nb_clues <= 9*9)
+        assert (self._nb_clues > 0) and (self._nb_clues <= 9 * 9)
 
     def generate(self, seed: int = None):
         if seed is not None:
-            # TODO see if there is a better practice 
+            # TODO see if there is a better practice
             # (maybe dependency injection for number generator)
             random.seed(seed)
             np.random.seed(seed)
@@ -28,7 +28,7 @@ class PartialGridGenerator:
         board = self._generate_sparse_grid(solution)
 
         while True:
-            solved = [*islice(self._solver(board), 2)] 
+            solved = [*islice(self._solver(board), 2)]
             if len(solved) == 1:
                 break
             indices_of_different_cells = [
@@ -47,6 +47,6 @@ class PartialGridGenerator:
         board.flat[
             np.random.choice(np.arange(board.size), self._nb_clues, replace=False)
         ] = 0
-        assert board.shape == (9,9)
+        assert board.shape == (9, 9)
         assert type(board) == np.ndarray
         return board

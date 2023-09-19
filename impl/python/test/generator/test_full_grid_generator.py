@@ -1,8 +1,5 @@
-from sudoku.validity import check_solution, grid_match_clues
+from sudoku.validity import check_solution
 from sudoku.generator.full_grid_generator import FullGridGenerator
-from sudoku.multisolver.multisolver import multisolve
-
-from sudoku.solver.backtracking import solve
 
 import numpy as np
 
