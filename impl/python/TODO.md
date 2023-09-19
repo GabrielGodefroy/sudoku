@@ -23,7 +23,6 @@
 
 - [ ] Code coverage on CI (https://deusyss.developpez.com/tutoriels/Python/Coverage/)
 - [ ] Graphical interface using pyqt
-- [ ] Test the cli from an external program that can be shared for the different languages
 - [ ] Use matrix in gitlab-ci to run with several python version
 - [ ] Restrict python version in conda environment file
 - [ ] Add an `install` target to avoid `export PYTHONPATH=~$(pwd):$PYTHONPATH`
